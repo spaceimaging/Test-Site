@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deep Sky - Astrophotography Archive</title>
+  <title>Rafal Szwejkowski — Deep Sky Astrophotography</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,17 +11,18 @@
   
   <style>
     :root {
-      --bg-pitch: #070708;
-      --bg-panel: #0f1012;
-      --bg-subtle: #16181b;
-      --border-crisp: #272a30;
-      --border-muted: #1c1e24;
-      --text-bright: #f0f2f5;
-      --text-main: #b8bdc7;
-      --text-dim: #737a87;
-      --accent-star: #9dc4e8;
-      --accent-ha: #e06060;
-      --accent-oiii: #5ce0d8;
+      --bg-pitch: #07080a;
+      --bg-panel: #0d0e12;
+      --bg-matte: #040507;
+      --bg-subtle: #13151a;
+      --border-frame: #1b1e26;
+      --border-inner: #242934;
+      --border-hover: #3e4656;
+      --text-bright: #eef1f6;
+      --text-main: #b8beca;
+      --text-dim: #6f7787;
+      --accent-steel: #9bb2ce;
+      --accent-silver: #d6d9e0;
     }
 
     body {
@@ -41,46 +42,58 @@
     .astro-table {
       width: 100%;
       border-collapse: collapse;
-      border: 1px solid var(--border-crisp);
+      border: 1px solid var(--border-frame);
       background-color: var(--bg-panel);
     }
     .astro-table th, .astro-table td {
-      border: 1px solid var(--border-crisp);
-      padding: 8px 14px;
-      font-size: 0.85rem;
+      border: 1px solid var(--border-frame);
+      padding: 9px 14px;
+      font-size: 0.83rem;
       text-align: left;
     }
     .astro-table th {
       background-color: var(--bg-subtle);
-      color: var(--text-bright);
+      color: #cbd3df;
       font-weight: 600;
       width: 28%;
       white-space: nowrap;
+      letter-spacing: 0.02em;
     }
     .astro-table td {
-      color: var(--text-bright);
+      color: #e2e6ee;
+    }
+
+    /* Darkroom matted photo frame styling */
+    .darkroom-frame {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-frame);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    }
+    .darkroom-matte {
+      background: var(--bg-matte);
+      border: 1px solid var(--border-inner);
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-slate-700 selection:text-white">
 
   <!-- Header -->
-  <header class="border-b border-[#20232a] bg-[#090a0c] sticky top-0 z-50">
+  <header class="border-b border-[#1b1e26] bg-[#08090c] sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-3">
       <div>
-        <a href="javascript:void(0)" onclick="switchView('grid')" class="group inline-flex items-baseline gap-2">
-          <span class="text-lg md:text-xl font-semibold tracking-wider text-white uppercase">AstroArchive</span>
-          <span class="text-xs font-mono text-[#737a87] group-hover:text-[#9dc4e8] transition-colors">// OBSERVATIONAL LOG & GALLERY</span>
+        <a href="javascript:void(0)" onclick="switchView('grid')" class="group block text-center md:text-left">
+          <div class="text-lg md:text-xl font-medium tracking-wide text-white group-hover:text-[#c4d4e6] transition-colors">
+            Rafal Szwejkowski Astrophotography
+          </div>
+          <div class="text-[11px] font-mono text-[#6f7787] tracking-wider uppercase mt-0.5">
+            Deep-Sky Imaging Archive &bull; Olsztyn, Poland
+          </div>
         </a>
       </div>
       
-      <!-- Category navigation -->
-      <nav class="flex flex-wrap items-center justify-center gap-1 md:gap-2 text-xs md:text-sm font-medium">
-        <button id="nav-btn-all" onclick="filterTargets('all')" class="nav-btn px-3 py-1.5 rounded text-white bg-[#1a1d24] border border-[#2e333d] hover:border-slate-500 transition">All Targets</button>
-        <button id="nav-btn-clusters" onclick="filterTargets('clusters')" class="nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-white hover:bg-[#14161b] transition">Globular Clusters</button>
-        <button id="nav-btn-galaxies" onclick="filterTargets('galaxies')" class="nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-white hover:bg-[#14161b] transition">Galaxies</button>
-        <button id="nav-btn-nebulae" onclick="filterTargets('nebulae')" class="nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-white hover:bg-[#14161b] transition">Nebulae</button>
-        <button onclick="showEquipmentModal()" class="nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-[#9dc4e8] hover:bg-[#14161b] transition">Equipment & Setup</button>
+      <!-- Category navigation with live PBase-style counts -->
+      <nav id="category-nav" class="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 text-xs font-mono">
+        <!-- Rendered dynamically by updateNav() -->
       </nav>
     </div>
   </header>
@@ -93,16 +106,16 @@
     <div id="view-grid" class="space-y-6">
       
       <!-- Filter status bar -->
-      <div class="flex items-center justify-between border-b border-[#1c1f26] pb-2 text-xs">
-        <div class="flex items-center gap-3">
-          <span class="text-[#737a87] uppercase tracking-wider font-mono">Catalog Listing &mdash; <span id="active-category-name" class="text-white">ALL TARGETS</span></span>
-          <span class="text-[#404654] font-mono">&bull;</span>
-          <span class="text-[#8c94a3] font-mono text-[11px]"><span id="catalog-count" class="text-white font-semibold">1</span> target</span>
+      <div class="flex items-center justify-between border-b border-[#1b1e26] pb-2 text-xs font-mono">
+        <div class="flex items-center gap-2.5">
+          <span class="text-[#68707f] uppercase tracking-wider">Catalog &mdash; <span id="active-category-name" class="text-[#e2e6ef] font-medium">ALL TARGETS</span></span>
+          <span class="text-[#323640]">&bull;</span>
+          <span class="text-[#8c95a5] text-[11px]"><span id="catalog-count" class="text-white font-semibold">1</span> plates</span>
         </div>
-        <span class="text-[#737a87] hidden sm:inline">Click thumbnail for full plate & technical exposure table</span>
+        <span class="text-[#596170] hidden sm:inline text-[11px]">Select any photograph for calibrated master plate &amp; acquisition log</span>
       </div>
 
-      <!-- Thumbnails Grid -->
+      <!-- Matted Thumbnails Grid -->
       <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <!-- Target cards populated by JS -->
       </div>
@@ -113,71 +126,82 @@
     <!-- ========================================== -->
     <div id="view-detail" class="hidden space-y-6">
       
-      <!-- Breadcrumb Bar -->
-      <div class="flex items-center justify-between text-xs font-mono border-b border-[#1f2229] pb-3">
-        <div class="flex items-center space-x-2 text-[#7f8796]">
-          <button onclick="switchView('grid')" class="hover:text-white underline">&larr; Back to Catalog Grid</button>
-          <span>/</span>
-          <span id="detail-category-badge" class="text-[#9dc4e8]">Globular Clusters</span>
-          <span>/</span>
-          <span id="detail-breadcrumb-title" class="text-white font-semibold">NGC 2419</span>
+      <!-- Top Classical PBase Sequential Target Navigation Bar -->
+      <div class="border-b border-[#1b1e26] pb-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono text-[#767f90]">
+        <!-- Previous Target Link -->
+        <button id="target-prev-btn" onclick="navigateDetailTarget(-1)" class="hover:text-white flex items-center gap-1 transition text-left group">
+          <span class="text-[#555d6c] group-hover:text-white">&laquo;</span>
+          <span class="text-[#8e98a8] group-hover:text-white truncate max-w-[220px]" id="target-prev-label">Previous Target</span>
+        </button>
+        
+        <!-- Breadcrumb / Index -->
+        <div class="flex items-center gap-2 text-[11px]">
+          <button onclick="switchView('grid')" class="hover:text-white text-[#9bb2ce] underline decoration-[#374052] underline-offset-2 transition">[ Catalog Index ]</button>
+          <span class="text-[#303540]">&bull;</span>
+          <span id="detail-category-badge" class="text-[#828b9c]">Nebulae</span>
+          <span class="text-[#303540]">&bull;</span>
+          <span id="detail-pos-indicator" class="text-[#d8dde6] font-medium">Target 1 of 13</span>
         </div>
-        <div class="text-[11px] text-[#636c7c] hidden sm:block">
-          Catalog Ref: <span id="detail-ref-code" class="text-white">NGC 2419</span>
-        </div>
+
+        <!-- Next Target Link -->
+        <button id="target-next-btn" onclick="navigateDetailTarget(1)" class="hover:text-white flex items-center gap-1 transition text-right group">
+          <span class="text-[#8e98a8] group-hover:text-white truncate max-w-[220px]" id="target-next-label">Next Target</span>
+          <span class="text-[#555d6c] group-hover:text-white">&raquo;</span>
+        </button>
       </div>
 
       <!-- Title & Basic Classification Header -->
       <div class="text-center py-2 space-y-1">
-        <h1 id="detail-title" class="text-2xl md:text-3xl font-bold tracking-tight text-white">NGC 2419 (Intergalactic Wanderer)</h1>
-        <p id="detail-subtitle" class="text-xs md:text-sm text-[#8f96a3]">Remote Luminous Globular Cluster in Lynx</p>
+        <h1 id="detail-title" class="text-2xl md:text-3xl font-semibold tracking-tight text-[#f0f3f8]">NGC 2419 (Intergalactic Wanderer)</h1>
+        <p id="detail-subtitle" class="text-xs md:text-sm text-[#7d8594] font-mono">Remote Luminous Globular Cluster in Lynx</p>
       </div>
 
-      <!-- Main Plate Image Display Container -->
-      <div class="bg-[#0b0c0e] border border-[#252830] rounded-sm p-2 flex flex-col items-center">
+      <!-- Master Plate Container (Double-Bordered Darkroom Matte) -->
+      <div class="darkroom-frame p-3 sm:p-4 flex flex-col items-center">
         
         <!-- Interactive View Controls Toolbar -->
-        <div class="w-full flex items-center justify-between px-2 pb-2 mb-2 border-b border-[#1a1c22] text-xs font-mono text-[#7b8392]">
-          <div class="flex items-center gap-3">
-            <span class="inline-flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-              Full Plate View
-            </span>
-            <span class="text-[#3c4250]">|</span>
-            <span id="plate-dimensions">Dimensions: 5811 x 3675 px</span>
+        <div class="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between px-1 pb-2.5 mb-2.5 border-b border-[#181a20] text-xs font-mono text-[#747c8c] gap-2">
+          <div class="flex items-center gap-2.5">
+            <span class="text-[#ccd3df] font-medium">Master Calibrated Plate</span>
+            <span class="text-[#303540]">|</span>
+            <span id="plate-dimensions" class="text-[#8890a0]">Dimensions: 5811 &times; 3675 px</span>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="openLightbox()" class="px-2.5 py-1 bg-[#1a1f29] hover:bg-[#252d3d] text-[#5ce0d8] border border-[#2d3a4d] rounded text-[11px] font-semibold transition flex items-center gap-1.5">
-              <span>🔍</span> Fullscreen Zoom & Pan
+            <button onclick="openLightbox()" title="Open interactive zoom & pan canvas" class="px-3 py-1 bg-[#13151b] hover:bg-[#1d212b] text-[#c4d4e6] border border-[#272e3a] text-[11px] font-mono transition flex items-center gap-1">
+              <span>[ Fullscreen &amp; Zoom ]</span>
             </button>
-            <button id="detail-bw-btn" onclick="toggleBWPlate()" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#1d2028] text-white border border-[#2b2f38] rounded text-[11px] transition flex items-center gap-1">
-              <span>◐</span> Black &amp; White
+            <button id="detail-bw-btn" onclick="toggleBWPlate()" class="px-3 py-1 bg-[#13151b] hover:bg-[#1d212b] text-[#9ba4b4] hover:text-white border border-[#242934] text-[11px] font-mono transition flex items-center gap-1">
+              <span>[ ◐ Monochrome B&amp;W ]</span>
             </button>
           </div>
         </div>
 
-        <!-- Main Image Element with Fullscreen Zoom Trigger -->
-        <div class="relative w-full flex justify-center bg-black overflow-hidden rounded group cursor-zoom-in" onclick="openLightbox()">
+        <!-- Main Image Element (Unobstructed Photograph inside dark matte) -->
+        <div class="darkroom-matte p-1.5 w-full flex justify-center bg-[#030406] cursor-zoom-in group" onclick="openLightbox()" title="Click image to open interactive full-screen zoom & pan viewer">
           <img 
             id="detail-main-image" 
             src="" 
             alt="Deep Sky Object Plate" 
-            class="w-full max-h-[800px] object-contain transition-all duration-200 group-hover:opacity-95"
+            class="w-full max-h-[820px] object-contain transition-opacity duration-200 group-hover:opacity-95"
           />
-          <div class="absolute bottom-3 right-3 bg-black/75 text-white font-mono text-[11px] px-2.5 py-1 rounded border border-[#2f3542] backdrop-blur-sm pointer-events-none transition opacity-75 group-hover:opacity-100 flex items-center gap-1.5">
-            <span>🔍</span> Click to inspect full resolution & zoom
-          </div>
         </div>
-        <div id="plate-fov" class="w-full text-right pt-2 px-1 text-[11px] text-[#676f7d] font-mono">
-          Field radius: 0.368° &bull; Pixel scale: 0.385"/pixel &bull; Orientation: 45.04°
+
+        <!-- Astrometric & Scale Caption beneath frame -->
+        <div class="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between pt-2.5 px-1 text-[11px] text-[#5e6675] font-mono border-t border-[#14161c] mt-2.5 gap-1">
+          <div id="plate-astrometry" class="truncate">
+            <!-- Populated by JS -->
+          </div>
+          <div class="text-[#4b5260] shrink-0">
+            Click plate or [ Fullscreen &amp; Zoom ] for full resolution inspection
+          </div>
         </div>
       </div>
 
-      <!-- 100% Crop Details -->
-      <div class="space-y-3">
-        <div class="border-b border-[#21252d] pb-1.5 flex items-baseline justify-between">
-          <h2 class="text-sm font-semibold uppercase tracking-wider text-white font-mono">High Resolution Crop Details</h2>
-          <span class="text-xs text-[#737a87]">Inspecting optical resolution and core stellar density</span>
+      <!-- 100% Crop Details (Contact-print style) -->
+      <div class="space-y-3 pt-2">
+        <div class="border-b border-[#1b1e26] pb-1.5 flex items-baseline justify-between">
+          <h2 class="text-xs font-semibold uppercase tracking-wider text-[#ccd3df] font-mono">High Resolution Crop Details</h2>
+          <span class="text-[11px] text-[#636b7a] font-mono">1:1 Core sampling &bull; Resolving stellar density and fine filaments</span>
         </div>
 
         <div id="crop-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -187,9 +211,9 @@
 
       <!-- Technical Exposure & Acquisition Data Table -->
       <div class="space-y-3 pt-2">
-        <div class="border-b border-[#21252d] pb-1.5 flex items-baseline justify-between">
-          <h2 class="text-sm font-semibold uppercase tracking-wider text-white font-mono">Technical Acquisition & Exposure Data</h2>
-          <span class="text-xs text-[#737a87]">Calibrated master integration (AstroBin verified)</span>
+        <div class="border-b border-[#1b1e26] pb-1.5 flex items-baseline justify-between">
+          <h2 class="text-xs font-semibold uppercase tracking-wider text-[#ccd3df] font-mono">Technical Acquisition &amp; Exposure Data</h2>
+          <span class="text-[11px] text-[#636b7a] font-mono">Calibrated integration (AstroBin verified log)</span>
         </div>
 
         <div class="overflow-x-auto">
@@ -200,7 +224,7 @@
                 <td id="meta-object">NGC 2419 (Caldwell 25 / Intergalactic Wanderer)</td>
               </tr>
               <tr>
-                <th>Constellation & Coordinates</th>
+                <th>Constellation &amp; Coordinates</th>
                 <td id="meta-coords">Lynx &bull; RA 07h 37m 57.77s | Dec +38° 52′ 49.3″</td>
               </tr>
               <tr>
@@ -208,15 +232,15 @@
                 <td id="meta-optics">GSO 10" f/8 Ritchey-Chretien (2000mm focal length, f/8)</td>
               </tr>
               <tr>
-                <th>Mount & Guiding</th>
+                <th>Mount &amp; Guiding</th>
                 <td id="meta-mount">Sky-Watcher EQ6-Ri Pro &bull; ZWO OAG-L &bull; ZWO CAA Camera Angle Adjuster</td>
               </tr>
               <tr>
-                <th>Camera & Sensor Details</th>
+                <th>Camera &amp; Sensor Details</th>
                 <td id="meta-camera">ZWO ASI2600MM Pro &bull; Pixel scale: 0.385 arcsec/pixel</td>
               </tr>
               <tr>
-                <th>Filters & Sub-Exposures</th>
+                <th>Filters &amp; Sub-Exposures</th>
                 <td id="meta-exposure-breakdown" class="leading-relaxed">
                   <!-- Populated by JS -->
                 </td>
@@ -226,11 +250,11 @@
                 <td id="meta-total-time" class="font-bold text-white">12 Hours 40 Minutes</td>
               </tr>
               <tr>
-                <th>Observing Date(s) & Moon</th>
+                <th>Observing Date(s) &amp; Moon</th>
                 <td id="meta-dates">Apr 2–3 2023, Apr 11 2025, Apr 3, 19–20, 29 2026 &bull; Avg Moon Age: 11.11d (Phase: 69.96%)</td>
               </tr>
               <tr>
-                <th>Accessories & Software</th>
+                <th>Accessories &amp; Software</th>
                 <td id="meta-software">ZWO EFW 7 x 2" &bull; PixInsight &bull; WCS: DDM Thin Plate Spline</td>
               </tr>
             </tbody>
@@ -239,11 +263,24 @@
       </div>
 
       <!-- Observational and Astronomical Field Notes -->
-      <div class="space-y-2 pt-2 pb-6">
-        <h2 class="text-sm font-semibold uppercase tracking-wider text-white font-mono border-b border-[#21252d] pb-1.5">Astrophysical & Field Notes</h2>
-        <div id="meta-notes" class="text-xs md:text-sm text-[#b2b8c4] leading-relaxed space-y-2 bg-[#0d0e11] p-4 border border-[#20232b] rounded-sm">
+      <div class="space-y-2 pt-2 pb-4">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-[#ccd3df] font-mono border-b border-[#1b1e26] pb-1.5">Astrophysical &amp; Field Notes</h2>
+        <div id="meta-notes" class="text-xs md:text-sm text-[#aab1be] leading-relaxed space-y-2 bg-[#0b0c10] p-4 sm:p-5 border border-[#1b1e26]">
           <!-- Text inserted via JS -->
         </div>
+      </div>
+
+      <!-- Bottom Classical PBase Sequential Target Navigation Bar -->
+      <div class="border-t border-[#1b1e26] pt-4 pb-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono text-[#767f90]">
+        <button onclick="navigateDetailTarget(-1)" class="hover:text-white flex items-center gap-1 transition text-left group">
+          <span class="text-[#555d6c] group-hover:text-white">&laquo;</span>
+          <span class="text-[#8e98a8] group-hover:text-white" id="target-prev-bottom-label">Previous Target</span>
+        </button>
+        <button onclick="switchView('grid')" class="hover:text-white text-[#9bb2ce] underline decoration-[#374052] underline-offset-2 transition">[ Back to Catalog Index ]</button>
+        <button onclick="navigateDetailTarget(1)" class="hover:text-white flex items-center gap-1 transition text-right group">
+          <span class="text-[#8e98a8] group-hover:text-white" id="target-next-bottom-label">Next Target</span>
+          <span class="text-[#555d6c] group-hover:text-white">&raquo;</span>
+        </button>
       </div>
 
     </div>
@@ -253,28 +290,28 @@
   <!-- Fullscreen Interactive Zoom & Pan Lightbox Modal -->
   <div id="lightbox-modal" class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md hidden flex flex-col select-none">
     <!-- Lightbox Top Controls Bar -->
-    <div class="h-12 border-b border-[#21252e] bg-[#090a0c]/95 px-4 flex items-center justify-between z-10 font-mono text-xs text-[#9aa2af]">
+    <div class="h-12 border-b border-[#1f2229] bg-[#08090c]/95 px-4 flex items-center justify-between z-10 font-mono text-xs text-[#8e96a4]">
       <div class="flex items-center gap-3 truncate">
-        <span class="text-white font-semibold truncate" id="lightbox-title">Target Name</span>
-        <span class="text-[#3c4250] hidden sm:inline">|</span>
-        <span id="lightbox-zoom-level" class="text-[#5ce0d8] font-bold">100%</span>
-        <span class="text-[#49505f] text-[11px] hidden lg:inline">&bull; Drag to pan &bull; Scroll / Pinch to zoom &bull; Double-click to toggle fit</span>
+        <span class="text-[#e2e6ef] font-semibold truncate" id="lightbox-title">Target Name</span>
+        <span class="text-[#303540] hidden sm:inline">|</span>
+        <span id="lightbox-zoom-level" class="text-[#a4bcd6] font-bold">100%</span>
+        <span class="text-[#535b6b] text-[11px] hidden lg:inline">&bull; Drag to pan &bull; Scroll to zoom &bull; Double-click to toggle fit</span>
       </div>
 
       <!-- Controls -->
       <div class="flex items-center gap-1.5 sm:gap-2">
-        <button onclick="stepZoom(1.3)" title="Zoom In (+)" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#20242e] text-white border border-[#2b2f38] rounded transition text-sm font-bold">+</button>
-        <button onclick="stepZoom(0.77)" title="Zoom Out (-)" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#20242e] text-white border border-[#2b2f38] rounded transition text-sm font-bold">&minus;</button>
-        <button onclick="resetZoom1to1()" title="Actual Pixels (100%)" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#20242e] text-white border border-[#2b2f38] rounded text-xs transition hidden sm:inline">1:1</button>
-        <button onclick="fitToScreen()" title="Fit to Screen" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#20242e] text-white border border-[#2b2f38] rounded text-xs transition">Fit</button>
-        <button id="lightbox-bw-btn" onclick="toggleBWLightbox()" title="Toggle Black & White (B)" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#20242e] text-white border border-[#2b2f38] rounded text-xs transition hidden md:inline">◐ B&amp;W</button>
-        <span class="text-[#3c4250] mx-1">|</span>
-        <button onclick="closeLightbox()" title="Close (Esc)" class="px-3 py-1 bg-[#261515] hover:bg-[#381a1a] text-[#f87171] border border-[#522525] rounded transition text-xs font-bold">&times; Close</button>
+        <button onclick="stepZoom(1.3)" title="Zoom In (+)" class="px-2.5 py-1 bg-[#121419] hover:bg-[#1d212a] text-[#dce1eb] border border-[#252933] rounded-sm transition text-xs font-bold font-mono">+</button>
+        <button onclick="stepZoom(0.77)" title="Zoom Out (-)" class="px-2.5 py-1 bg-[#121419] hover:bg-[#1d212a] text-[#dce1eb] border border-[#252933] rounded-sm transition text-xs font-bold font-mono">&minus;</button>
+        <button onclick="resetZoom1to1()" title="Actual Pixels (100%)" class="px-2.5 py-1 bg-[#121419] hover:bg-[#1d212a] text-[#dce1eb] border border-[#252933] rounded-sm text-xs font-mono transition hidden sm:inline">1:1</button>
+        <button onclick="fitToScreen()" title="Fit to Screen" class="px-2.5 py-1 bg-[#121419] hover:bg-[#1d212a] text-[#dce1eb] border border-[#252933] rounded-sm text-xs font-mono transition">Fit</button>
+        <button id="lightbox-bw-btn" onclick="toggleBWLightbox()" title="Toggle Black & White (B)" class="px-2.5 py-1 bg-[#121419] hover:bg-[#1d212a] text-[#dce1eb] border border-[#252933] rounded-sm text-xs font-mono transition hidden md:inline">◐ B&amp;W</button>
+        <span class="text-[#303540] mx-1">|</span>
+        <button onclick="closeLightbox()" title="Close (Esc)" class="px-3 py-1 bg-[#1e1516] hover:bg-[#2b1b1d] text-[#dc7f7f] border border-[#442327] rounded-sm transition text-xs font-mono font-medium">&times; Close</button>
       </div>
     </div>
 
     <!-- Lightbox Viewport / Pan Canvas -->
-    <div id="lightbox-viewport" class="relative flex-grow overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing bg-[#050506]">
+    <div id="lightbox-viewport" class="relative flex-grow overflow-hidden flex items-center justify-center cursor-grab active:cursor-grabbing bg-[#040405]">
       <img 
         id="lightbox-image" 
         src="" 
@@ -284,10 +321,10 @@
       />
 
       <!-- Previous / Next Image Arrow Overlays -->
-      <button onclick="navigateLightbox(-1)" title="Previous Target (Left Arrow)" class="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/60 hover:bg-black/90 text-white border border-[#252830] hover:border-slate-500 rounded-full transition z-20">
+      <button onclick="navigateLightbox(-1)" title="Previous Target (Left Arrow)" class="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/70 hover:bg-black/90 text-white border border-[#242730] hover:border-slate-500 rounded-full transition z-20">
         &#10094;
       </button>
-      <button onclick="navigateLightbox(1)" title="Next Target (Right Arrow)" class="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/60 hover:bg-black/90 text-white border border-[#252830] hover:border-slate-500 rounded-full transition z-20">
+      <button onclick="navigateLightbox(1)" title="Next Target (Right Arrow)" class="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/70 hover:bg-black/90 text-white border border-[#242730] hover:border-slate-500 rounded-full transition z-20">
         &#10095;
       </button>
     </div>
@@ -295,56 +332,62 @@
 
   <!-- Equipment & Observatory Modal -->
   <div id="equipment-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-[#0e1014] border border-[#2b303a] rounded max-w-2xl w-full p-6 space-y-4 shadow-2xl font-mono text-xs">
-      <div class="flex items-center justify-between border-b border-[#21252e] pb-3">
-        <h3 class="text-sm font-bold text-white uppercase tracking-wider">Observatory Hardware & Systems</h3>
-        <button onclick="hideEquipmentModal()" class="text-[#737a87] hover:text-white text-base">&times;</button>
+    <div class="bg-[#0c0d11] border border-[#232731] rounded-sm max-w-2xl w-full p-6 space-y-4 shadow-2xl font-mono text-xs">
+      <div class="flex items-center justify-between border-b border-[#1c1f26] pb-3">
+        <h3 class="text-xs font-bold text-[#e0e4ee] uppercase tracking-wider">Observatory Hardware &amp; Acquisition Systems</h3>
+        <button onclick="hideEquipmentModal()" class="text-[#6d7585] hover:text-white text-base">&times;</button>
       </div>
 
-      <div class="space-y-4 text-[#aab1be]">
+      <div class="space-y-4 text-[#9aa2af]">
         <div>
-          <h4 class="text-white font-bold mb-1">// RIG 1: GSO 10" RC</h4>
-          <p class="text-[#848c9c]">Optics: GSO 10" f/8 Ritchey-Chretien (2000mm focal length)</p>
-          <p class="text-[#848c9c]">Camera: ZWO ASI2600MM Pro (APS-C Back-Illuminated Mono CMOS)</p>
-          <p class="text-[#848c9c]">Mount: Sky-Watcher EQ6-Ri Pro</p>
-          <p class="text-[#848c9c]">Filters: Antlia V-Pro 2" LRGB</p>
-          <p class="text-[#848c9c]">Accessories: ZWO CAA Camera Angle Adjuster &bull; ZWO EFW 7 x 2" &bull; ZWO OAG-L</p>
+          <h4 class="text-[#e2e6f0] font-bold mb-1">System 1: GSO 10" Ritchey-Chr&eacute;tien</h4>
+          <p class="text-[#78808e]">Optics: GSO 10" f/8 Ritchey-Chr&eacute;tien (2000mm focal length)</p>
+          <p class="text-[#78808e]">Camera: ZWO ASI2600MM Pro (APS-C Back-Illuminated Mono CMOS)</p>
+          <p class="text-[#78808e]">Mount: Sky-Watcher EQ6-Ri Pro</p>
+          <p class="text-[#78808e]">Filters: Antlia V-Pro 2" LRGB</p>
+          <p class="text-[#78808e]">Accessories: ZWO CAA Camera Angle Adjuster &bull; ZWO EFW 7 x 2" &bull; ZWO OAG-L</p>
         </div>
 
         <div>
-          <h4 class="text-white font-bold mb-1">// RIG 2: GSO 8" RC</h4>
-          <p class="text-[#848c9c]">Optics: GSO 8" f/8 Ritchey-Chretien (1600mm focal length)</p>
-          <p class="text-[#848c9c]">Camera: ZWO ASI533MM Pro</p>
-          <p class="text-[#848c9c]">Mount: ZWO AM5N Harmonic Mount</p>
-          <p class="text-[#848c9c]">Filters: Antlia V-Pro 36mm LRGB</p>
-          <p class="text-[#848c9c]">Accessories: ZWO OAG-L</p>
+          <h4 class="text-[#e2e6f0] font-bold mb-1">System 2: GSO 8" Ritchey-Chr&eacute;tien</h4>
+          <p class="text-[#78808e]">Optics: GSO 8" f/8 Ritchey-Chr&eacute;tien (1600mm focal length)</p>
+          <p class="text-[#78808e]">Camera: ZWO ASI533MM Pro</p>
+          <p class="text-[#78808e]">Mount: ZWO AM5N Harmonic Mount</p>
+          <p class="text-[#78808e]">Filters: Antlia V-Pro 36mm LRGB</p>
+          <p class="text-[#78808e]">Accessories: ZWO OAG-L</p>
         </div>
 
         <div>
-          <h4 class="text-white font-bold mb-1">// RIG 3: GSO 10" F/4 NEWTONIAN</h4>
-          <p class="text-[#848c9c]">Optics: GSO 10" F/4 Carbon Imaging Newtonian (860mm f/3.44 with 0.86x Reducer)</p>
-          <p class="text-[#848c9c]">Camera: ZWO ASI2600MC Pro (One-Shot Color APS-C)</p>
-          <p class="text-[#848c9c]">Mount: ZWO AM5N Harmonic Mount</p>
-          <p class="text-[#848c9c]">Accessories: Sky-Watcher 0.86x Coma Corrector &bull; ZWO EFW 5 x 2" &bull; ZWO OAG-L</p>
+          <h4 class="text-[#e2e6f0] font-bold mb-1">System 3: GSO 10" F/4 Carbon Imaging Newtonian</h4>
+          <p class="text-[#78808e]">Optics: GSO 10" F/4 Carbon Imaging Newtonian (860mm f/3.44 with 0.86x Reducer)</p>
+          <p class="text-[#78808e]">Camera: ZWO ASI2600MC Pro (One-Shot Color APS-C)</p>
+          <p class="text-[#78808e]">Mount: ZWO AM5N Harmonic Mount</p>
+          <p class="text-[#78808e]">Accessories: Sky-Watcher 0.86x Coma Corrector &bull; ZWO EFW 5 x 2" &bull; ZWO OAG-L</p>
         </div>
 
         <div>
-          <h4 class="text-white font-bold mb-1">// OBSERVING LOCATION & SKY</h4>
-          <p class="text-[#848c9c]">Location: Home Backyard, Olsztyn, Poland</p>
-          <p class="text-[#848c9c]">Typical Sky Quality: Bortle Class 5.0</p>
+          <h4 class="text-[#e2e6f0] font-bold mb-1">Observatory Location &amp; Sky Conditions</h4>
+          <p class="text-[#78808e]">Location: Backyard Observatory, Olsztyn, Poland</p>
+          <p class="text-[#78808e]">Typical Sky Quality: Bortle Class 5.0</p>
         </div>
       </div>
 
-      <div class="pt-2 text-right">
-        <button onclick="hideEquipmentModal()" class="px-4 py-1.5 bg-[#1b1e25] text-white border border-[#2f3542] hover:bg-[#252a35] rounded transition">Close</button>
+      <div class="pt-2 text-right border-t border-[#1a1d24]">
+        <button onclick="hideEquipmentModal()" class="px-4 py-1.5 bg-[#14161c] text-[#d0d5df] border border-[#262a34] hover:bg-[#1d2028] rounded-sm transition text-xs font-mono">Close</button>
       </div>
     </div>
   </div>
 
-  <footer class="border-t border-[#1a1c22] bg-[#07080a] py-6 text-center text-xs text-[#5f6675] font-mono">
-    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-      <p>&copy; Astrophotography Observational Archive &bull; Uncompressed Calibrated Pipeline</p>
-      <p class="text-[11px] text-[#4d5360]">Hosted via GitHub Pages</p>
+  <footer class="border-t border-[#181a20] bg-[#07080a] py-8 text-center text-xs text-[#5a616f] font-mono">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div>
+        <span class="text-[#848c9c] font-medium">Rafal Szwejkowski Astrophotography</span>
+        <span class="text-[#2b2e38] mx-2">&bull;</span>
+        <span>Calibrated Deep-Sky Observational Archive</span>
+      </div>
+      <div class="text-[11px] text-[#444a56]">
+        Backyard Observatory &bull; Olsztyn, Poland &bull; Hosted on GitHub Pages
+      </div>
     </div>
   </footer>
 
@@ -352,6 +395,46 @@
   <script src="catalog.js?v=20261107162412"></script>
 
   <script>
+    let currentFilter = "all";
+
+    function updateNav(filter = "all") {
+      currentFilter = filter;
+      const nav = document.getElementById("category-nav");
+      if (!nav) return;
+
+      const counts = {
+        all: astroCatalog.length,
+        nebulae: astroCatalog.filter(i => i.category === 'nebulae').length,
+        galaxies: astroCatalog.filter(i => i.category === 'galaxies').length,
+        clusters: astroCatalog.filter(i => i.category === 'clusters').length,
+      };
+
+      const items = [
+        { id: "all", label: `All (${counts.all})` },
+        { id: "nebulae", label: `Nebulae (${counts.nebulae})` },
+        { id: "galaxies", label: `Galaxies (${counts.galaxies})` },
+        { id: "clusters", label: `Globular Clusters (${counts.clusters})` },
+      ];
+
+      let html = "";
+      items.forEach((item, idx) => {
+        const isActive = item.id === filter;
+        const btnClass = isActive
+          ? "px-2.5 py-1 text-white bg-[#151820] border border-[#2e3542] rounded-sm transition font-medium"
+          : "px-2.5 py-1 text-[#788292] hover:text-[#e2e6ee] border border-transparent hover:border-[#1e222a] rounded-sm transition";
+
+        html += `<button onclick="filterTargets('${item.id}')" class="${btnClass}">${item.label}</button>`;
+        if (idx < items.length - 1) {
+          html += `<span class="text-[#252832] hidden sm:inline select-none">|</span>`;
+        }
+      });
+
+      html += `<span class="text-[#252832] hidden sm:inline select-none">|</span>`;
+      html += `<button onclick="showEquipmentModal()" class="px-2.5 py-1 text-[#788292] hover:text-[#9bb0c9] border border-transparent hover:border-[#1e222a] rounded-sm transition">Observatory Setup</button>`;
+
+      nav.innerHTML = html;
+    }
+
     function renderGrid(filter = "all") {
       const container = document.getElementById("grid-container");
       container.innerHTML = "";
@@ -370,21 +453,12 @@
       };
       document.getElementById("active-category-name").textContent = labelMap[filter] || filter.toUpperCase();
 
-      // Update active nav button styles
-      ['all', 'clusters', 'galaxies', 'nebulae'].forEach(cat => {
-        const btn = document.getElementById(`nav-btn-${cat}`);
-        if (!btn) return;
-        if (cat === filter) {
-          btn.className = "nav-btn px-3 py-1.5 rounded text-white bg-[#1a1d24] border border-[#2e333d] hover:border-slate-500 transition";
-        } else {
-          btn.className = "nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-white hover:bg-[#14161b] transition";
-        }
-      });
+      updateNav(filter);
 
       if (filtered.length === 0) {
         container.innerHTML = `
-          <div class="col-span-full py-16 text-center text-xs font-mono text-[#636b79] border border-dashed border-[#1c1f26] rounded">
-            No objects currently catalogued under this category.
+          <div class="col-span-full py-16 text-center text-xs font-mono text-[#5c6472] border border-dashed border-[#181b22] rounded-sm">
+            No plates currently catalogued under this category.
           </div>
         `;
         return;
@@ -392,32 +466,36 @@
 
       filtered.forEach(item => {
         const card = document.createElement("div");
-        card.className = "bg-[#0d0f13] border border-[#20232b] hover:border-[#3d4554] transition-all rounded overflow-hidden flex flex-col group cursor-pointer";
+        card.className = "darkroom-frame hover:border-[#384152] transition-colors p-3 flex flex-col group cursor-pointer";
         card.onclick = () => openTarget(item.id);
 
+        const shortOptic = item.optics.split('(')[0]
+          .replace(/Carbon Imaging Newtonian/gi, 'Newtonian')
+          .replace(/Ritchey-Chr[eé]tien/gi, 'RC');
+
         card.innerHTML = `
-          <div class="relative overflow-hidden aspect-[4/3] bg-black">
-            <img 
-              src="${item.mainImage}" 
-              alt="${item.name}" 
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90 group-hover:opacity-100" 
-              loading="lazy"
-            />
-            <span class="absolute bottom-2 right-2 bg-black/80 font-mono text-[10px] px-1.5 py-0.5 rounded text-white border border-[#272b35]">
-              ${item.totalTime}
-            </span>
+          <!-- Inset Matted Picture Frame (Unobstructed photo) -->
+          <div class="darkroom-matte p-1.5 flex items-center justify-center bg-[#030406]">
+            <div class="relative w-full aspect-[4/3] bg-black overflow-hidden">
+              <img 
+                src="${item.mainImage}" 
+                alt="${item.name}" 
+                class="w-full h-full object-cover opacity-95 group-hover:opacity-100 transition-opacity" 
+                loading="lazy"
+              />
+            </div>
           </div>
           
-          <div class="p-3 flex flex-col justify-between flex-grow space-y-2">
+          <!-- Caption Block Beneath Frame -->
+          <div class="pt-3 pb-0.5 flex flex-col justify-between flex-grow space-y-2">
             <div>
-              <div class="text-[11px] font-mono text-[#9dc4e8] tracking-tight uppercase">${item.designation}</div>
-              <h3 class="text-sm font-bold text-white group-hover:text-[#5ce0d8] transition-colors leading-snug">${item.name}</h3>
+              <div class="text-[10px] font-mono text-[#78889e] tracking-wider uppercase">${item.designation || item.constellation}</div>
+              <h3 class="text-sm font-semibold text-[#e2e6ee] group-hover:text-white transition-colors leading-snug mt-0.5">${item.name}</h3>
             </div>
             
-            <div class="pt-2 border-t border-[#181a20] text-[11px] font-mono text-[#78808f] space-y-0.5">
-              <div>Constellation: <span class="text-[#c2c8d4]">${item.constellation}</span></div>
-              <div class="truncate">Optic: <span class="text-[#c2c8d4]">${item.optics.split('(')[0]}</span></div>
-              <div>Integration: <span class="text-[#969ea9]">${item.totalTime}</span></div>
+            <div class="pt-2 border-t border-[#14161c] text-[11px] font-mono text-[#5f6775] flex items-center justify-between">
+              <span class="truncate pr-2">${item.constellation} &bull; ${shortOptic}</span>
+              <span class="text-[#848e9e] shrink-0 font-medium">${item.totalTime}</span>
             </div>
           </div>
         `;
@@ -425,29 +503,69 @@
       });
     }
 
+    function navigateDetailTarget(dir) {
+      if (!currentTargetId) return;
+      const currentIndex = astroCatalog.findIndex(t => t.id === currentTargetId);
+      if (currentIndex === -1) return;
+
+      let nextIndex = currentIndex + dir;
+      if (nextIndex < 0) nextIndex = astroCatalog.length - 1;
+      if (nextIndex >= astroCatalog.length) nextIndex = 0;
+
+      openTarget(astroCatalog[nextIndex].id);
+    }
+
     function openTarget(targetId) {
       const item = astroCatalog.find(t => t.id === targetId);
       if (!item) return;
       currentTargetId = targetId;
 
+      const currentIndex = astroCatalog.findIndex(t => t.id === targetId);
+      const totalCount = astroCatalog.length;
+      const prevIndex = (currentIndex - 1 + totalCount) % totalCount;
+      const nextIndex = (currentIndex + 1) % totalCount;
+
+      const prevItem = astroCatalog[prevIndex];
+      const nextItem = astroCatalog[nextIndex];
+
+      // Update sequential navigation links (top & bottom)
+      const prevLabel = document.getElementById("target-prev-label");
+      if (prevLabel && prevItem) prevLabel.textContent = prevItem.name;
+      const prevBottom = document.getElementById("target-prev-bottom-label");
+      if (prevBottom && prevItem) prevBottom.textContent = prevItem.name;
+
+      const nextLabel = document.getElementById("target-next-label");
+      if (nextLabel && nextItem) nextLabel.textContent = nextItem.name;
+      const nextBottom = document.getElementById("target-next-bottom-label");
+      if (nextBottom && nextItem) nextBottom.textContent = nextItem.name;
+
+      const posIndicator = document.getElementById("detail-pos-indicator");
+      if (posIndicator) posIndicator.textContent = `Target ${currentIndex + 1} of ${totalCount}`;
+
       // Populate text fields
       document.getElementById("detail-title").textContent = item.name;
       document.getElementById("detail-subtitle").textContent = item.notes.split('.')[0] + '.';
-      document.getElementById("detail-breadcrumb-title").textContent = item.name;
       const catBadgeMap = { clusters: "Globular Clusters", galaxies: "Galaxies", nebulae: "Nebulae" };
       document.getElementById("detail-category-badge").textContent = catBadgeMap[item.category] || item.category.toUpperCase();
-      document.getElementById("detail-ref-code").textContent = item.id.toUpperCase();
 
       // Main image & plate specs
       const mainImg = document.getElementById("detail-main-image");
       mainImg.src = item.mainImage;
       applyBWState();
+
       if (item.resolution) {
         document.getElementById("plate-dimensions").textContent = "Dimensions: " + item.resolution;
       }
-      if (item.fov) {
-        document.getElementById("plate-fov").innerHTML = item.fov;
-      }
+      
+      // Astrometric caption bar beneath plate
+      const fovPart = item.fov ? item.fov : "";
+      const coordsPart = item.coords ? item.coords : "";
+      document.getElementById("plate-astrometry").innerHTML = `
+        <span>${item.constellation}</span>
+        <span class="text-[#2b2e38] mx-1.5">&bull;</span>
+        <span>${coordsPart}</span>
+        ${fovPart ? `<span class="text-[#2b2e38] mx-1.5">&bull;</span><span>${fovPart}</span>` : ""}
+      `;
 
       // Populate metadata table
       document.getElementById("meta-object").textContent = `${item.name} (${item.designation})`;
@@ -461,26 +579,26 @@
       document.getElementById("meta-software").innerHTML = item.software;
       document.getElementById("meta-notes").innerHTML = `<p>${item.notes}</p>`;
 
-      // Populate crops (fixed high-resolution inspection windows, no zoom)
+      // Populate crops (contact-print style cards)
       const cropContainer = document.getElementById("crop-grid");
       cropContainer.innerHTML = "";
       if (item.crops && item.crops.length > 0) {
         item.crops.forEach(crop => {
           const div = document.createElement("div");
-          div.className = "bg-[#0b0c0f] border border-[#20242e] rounded p-2 flex flex-col space-y-2";
+          div.className = "darkroom-frame p-3 flex flex-col space-y-2.5";
           div.innerHTML = `
-            <div class="overflow-hidden bg-black rounded max-h-[360px] flex items-center justify-center">
-              <img src="${crop.image}" alt="${crop.title}" class="w-full h-auto object-cover" loading="lazy" />
+            <div class="darkroom-matte p-1.5 flex items-center justify-center bg-[#030406]">
+              <img src="${crop.image}" alt="${crop.title}" class="w-full h-auto object-cover max-h-[380px]" loading="lazy" />
             </div>
-            <div class="px-1 text-xs">
-              <h4 class="font-bold text-white font-mono">${crop.title}</h4>
-              <p class="text-[#7e8796] text-[11px] mt-0.5">${crop.description}</p>
+            <div class="px-1 text-xs space-y-0.5 font-mono">
+              <h4 class="font-semibold text-[#dfe4ee]">${crop.title}</h4>
+              <p class="text-[#68707f] text-[11px] leading-relaxed">${crop.description}</p>
             </div>
           `;
           cropContainer.appendChild(div);
         });
       } else {
-        cropContainer.innerHTML = `<div class="text-xs text-[#626976] font-mono italic">No isolated crops catalogued for this object.</div>`;
+        cropContainer.innerHTML = `<div class="text-xs text-[#5f6674] font-mono italic">No isolated sampling crops catalogued for this plate.</div>`;
       }
 
       applyBWState();
@@ -536,26 +654,26 @@
       const detailBtn = document.getElementById("detail-bw-btn");
       if (detailBtn) {
         if (isBWMode) {
-          detailBtn.classList.add("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
-          detailBtn.classList.remove("bg-[#14161b]", "text-white", "border-[#2b2f38]");
-          detailBtn.innerHTML = "<span>◑</span> Color (Reset B&amp;W)";
+          detailBtn.classList.add("bg-[#181d26]", "text-[#c5d5e6]", "border-[#364254]");
+          detailBtn.classList.remove("bg-[#13151b]", "text-[#9ba4b4]", "border-[#242934]");
+          detailBtn.innerHTML = "<span>[ ◑ Color (Reset B&amp;W) ]</span>";
         } else {
-          detailBtn.classList.remove("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
-          detailBtn.classList.add("bg-[#14161b]", "text-white", "border-[#2b2f38]");
-          detailBtn.innerHTML = "<span>◐</span> Black &amp; White";
+          detailBtn.classList.remove("bg-[#181d26]", "text-[#c5d5e6]", "border-[#364254]");
+          detailBtn.classList.add("bg-[#13151b]", "text-[#9ba4b4]", "border-[#242934]");
+          detailBtn.innerHTML = "<span>[ ◐ Monochrome B&amp;W ]</span>";
         }
       }
 
       const lightboxBtn = document.getElementById("lightbox-bw-btn");
       if (lightboxBtn) {
         if (isBWMode) {
-          lightboxBtn.classList.add("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
-          lightboxBtn.classList.remove("bg-[#14161b]", "text-white", "border-[#2b2f38]");
-          lightboxBtn.innerHTML = "<span>◑</span> Color";
+          lightboxBtn.classList.add("bg-[#181d26]", "text-[#c5d5e6]", "border-[#364254]");
+          lightboxBtn.classList.remove("bg-[#121419]", "text-[#dce1eb]", "border-[#252933]");
+          lightboxBtn.innerHTML = "<span>◑ Color</span>";
         } else {
-          lightboxBtn.classList.remove("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
-          lightboxBtn.classList.add("bg-[#14161b]", "text-white", "border-[#2b2f38]");
-          lightboxBtn.innerHTML = "<span>◐</span> B&amp;W";
+          lightboxBtn.classList.remove("bg-[#181d26]", "text-[#c5d5e6]", "border-[#364254]");
+          lightboxBtn.classList.add("bg-[#121419]", "text-[#dce1eb]", "border-[#252933]");
+          lightboxBtn.innerHTML = "<span>◐ B&amp;W</span>";
         }
       }
     }
@@ -848,6 +966,24 @@
     });
 
 
+
+    // Global keyboard navigation on detail view (when lightbox & hardware modals are closed)
+    window.addEventListener("keydown", (e) => {
+      const modal = document.getElementById("lightbox-modal");
+      const equipModal = document.getElementById("equipment-modal");
+      if ((modal && !modal.classList.contains("hidden")) || (equipModal && !equipModal.classList.contains("hidden"))) return;
+
+      const detail = document.getElementById("view-detail");
+      if (detail && !detail.classList.contains("hidden")) {
+        if (e.key === "ArrowLeft") {
+          navigateDetailTarget(-1);
+        } else if (e.key === "ArrowRight") {
+          navigateDetailTarget(1);
+        } else if (e.key === "Escape") {
+          switchView("grid");
+        }
+      }
+    });
 
     // Equipment modal toggles
     function showEquipmentModal() {

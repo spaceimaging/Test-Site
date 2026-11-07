@@ -171,15 +171,15 @@ def detect_category(img):
         "ngc 2419", "ngc 869", "ngc 884", "ngc 7789", "ngc 188"
     ]
 
-    for kw in nebula_keywords:
-        if kw in title:
-            return "nebulae"
     for kw in galaxy_keywords:
         if kw in title:
             return "galaxies"
     for kw in cluster_keywords:
         if kw in title:
             return "clusters"
+    for kw in nebula_keywords:
+        if kw in title:
+            return "nebulae"
 
     if any("NEBULA" in t or "SUPERNOVA" in t or "HUBBLE_PALETTE" in t or "NARROWBAND" in t for t in themes):
         return "nebulae"

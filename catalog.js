@@ -343,7 +343,7 @@ const astroCatalog = [
   {
     "id": "afnjoa",
     "astrobinHash": "afnjoa",
-    "category": "nebulae",
+    "category": "galaxies",
     "name": "The Leo Galaxy Cluster - Abell 1367",
     "designation": "IC 2951, NGC 3842, NGC 3844, NGC 3860, NGC 3861, NGC 3867, NGC 3873, NGC 3875, NGC 3886",
     "constellation": "Leo",
