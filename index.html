@@ -405,6 +405,7 @@
       const counts = {
         all: astroCatalog.length,
         nebulae: astroCatalog.filter(i => i.category === 'nebulae').length,
+        planetary: astroCatalog.filter(i => i.category === 'planetary-nebulae').length,
         galaxies: astroCatalog.filter(i => i.category === 'galaxies').length,
         clusters: astroCatalog.filter(i => i.category === 'clusters').length,
       };
@@ -412,6 +413,7 @@
       const items = [
         { id: "all", label: `All (${counts.all})` },
         { id: "nebulae", label: `Nebulae (${counts.nebulae})` },
+        { id: "planetary-nebulae", label: `Planetary Nebulae (${counts.planetary})` },
         { id: "galaxies", label: `Galaxies (${counts.galaxies})` },
         { id: "clusters", label: `Globular Clusters (${counts.clusters})` },
       ];
@@ -449,7 +451,8 @@
         all: "ALL TARGETS",
         clusters: "GLOBULAR CLUSTERS",
         galaxies: "GALAXIES",
-        nebulae: "NEBULAE"
+        nebulae: "NEBULAE",
+        "planetary-nebulae": "PLANETARY NEBULAE"
       };
       document.getElementById("active-category-name").textContent = labelMap[filter] || filter.toUpperCase();
 
@@ -545,7 +548,12 @@
       // Populate text fields
       document.getElementById("detail-title").textContent = item.name;
       document.getElementById("detail-subtitle").textContent = item.notes.split('.')[0] + '.';
-      const catBadgeMap = { clusters: "Globular Clusters", galaxies: "Galaxies", nebulae: "Nebulae" };
+      const catBadgeMap = { 
+        clusters: "Globular Clusters", 
+        galaxies: "Galaxies", 
+        nebulae: "Nebulae",
+        "planetary-nebulae": "Planetary Nebulae"
+      };
       document.getElementById("detail-category-badge").textContent = catBadgeMap[item.category] || item.category.toUpperCase();
 
       // Main image & plate specs

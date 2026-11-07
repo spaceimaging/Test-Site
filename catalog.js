@@ -235,7 +235,7 @@ const astroCatalog = [
   {
     "id": "mgzg8z",
     "astrobinHash": "mgzg8z",
-    "category": "nebulae",
+    "category": "planetary-nebulae",
     "name": "Abell 61 Planetary Nebula in Cygnus",
     "designation": "Abell 61 Planetary Nebula in Cygnus",
     "constellation": "Cygnus",
@@ -289,7 +289,7 @@ const astroCatalog = [
   {
     "id": "oifl5y",
     "astrobinHash": "oifl5y",
-    "category": "nebulae",
+    "category": "planetary-nebulae",
     "name": "Patchick 6 – a small spherical PN in Cygnus (PN G077.6+04.3)",
     "designation": "Patchick 6 – a small spherical PN in Cygnus (PN G077.6+04.3)",
     "constellation": "Cygnus",

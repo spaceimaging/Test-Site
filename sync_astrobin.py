@@ -152,6 +152,15 @@ def detect_category(img):
     sol = img.get("solution") or {}
     subjects = (sol.get("objectsInField") or "").lower()
 
+    planetary_keywords = [
+        "planetary nebula", "planetary", " pn ", "pn g", "pk ", "abell 61",
+        "abell 39", "abell 36", "abell 43", "abell 70", "abell 78", "patchick",
+        "m27", "m57", "m76", "m97", "ngc 6543", "ngc 7293", "ngc 7009",
+        "ngc 7662", "ngc 6826", "ngc 6781", "ngc 2392", "ngc 1514", "ngc 3587",
+        "ngc 6884", "ngc 6886", "ngc 6891", "ngc 6803", "ngc 6804", "ngc 6807",
+        "ngc 6818", "ngc 6826", "ngc 6833", "ngc 6842", "jones 1", "ring nebula",
+        "dumbbell", "helix", "owl nebula", "cat's eye", "saturn nebula", "little dumb"
+    ]
     nebula_keywords = [
         "nebula", "sh2-", "sh 2-", "sharpless", "lbn", "ldn", "vdb", "ic 63",
         "ic 59", "ic 1396", "ic 1805", "ic 1848", "ngc 7000", "ngc 6888",
@@ -171,6 +180,9 @@ def detect_category(img):
         "ngc 2419", "ngc 869", "ngc 884", "ngc 7789", "ngc 188"
     ]
 
+    for kw in planetary_keywords:
+        if kw in title:
+            return "planetary-nebulae"
     for kw in galaxy_keywords:
         if kw in title:
             return "galaxies"
@@ -181,6 +193,8 @@ def detect_category(img):
         if kw in title:
             return "nebulae"
 
+    if any("PLANETARY" in t for t in themes):
+        return "planetary-nebulae"
     if any("NEBULA" in t or "SUPERNOVA" in t or "HUBBLE_PALETTE" in t or "NARROWBAND" in t for t in themes):
         return "nebulae"
     if any("GALAX" in t for t in themes):
