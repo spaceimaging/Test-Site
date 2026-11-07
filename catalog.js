@@ -8,6 +8,37 @@
 
 const astroCatalog = [
   {
+    id: "ic63",
+    category: "nebulae",
+    name: "The Ghost of Cassiopeia and Gamma Cas (IC 63)",
+    designation: "IC 63 / Sh2-185 / Ghost of Cassiopeia & γ Cas",
+    constellation: "Cassiopeia",
+    coords: "RA 00h 59m 49s | Dec +60° 54′ 00″",
+    optics: "GSO 10\" F/4 Carbon Imaging Newtonian (1000mm, with 0.86x Reducer at 860mm f/3.44)",
+    mount: "ZWO AM5N Harmonic Mount &bull; ZWO OAG-L",
+    camera: "ZWO ASI2600MC Pro &bull; Pixel scale: 0.899\"/pixel &bull; Orientation: 178.81°",
+    exposureBreakdown: "<span class='text-white font-semibold'>OSC Light:</span> 224 × 120s (7h 28m total)",
+    totalTime: "7h 28m",
+    dates: "Sep 11, 15, 19, 2026 &bull; Avg Moon Age: 4.24d (Phase: ~25%)",
+    software: "Sky-Watcher 0.86x Coma Corrector &bull; ZWO EFW 5 x 2\" &bull; PixInsight",
+    resolution: "5925 x 4000 px (File size: 14.7 MB)",
+    fov: "Field radius: 0.893° &bull; Pixel scale: 0.899\"/pixel &bull; Orientation: 178.81°",
+    notes: "Cassiopeia Ghost with brilliant Gamma Cas just in time for the Halloween season.<br><br><strong>IC 63</strong> (popularly dubbed the 'Ghost of Cassiopeia') is a luminous veil of emission and reflection nebulosity, sculpted and intensely ionized by the fierce ultraviolet output of nearby eruptive variable hypergiant star <strong>Gamma Cassiopeiae (Navi)</strong>. The ghostly shape glows in filamentary hydrogen-alpha crimson, with dust reflection wrapping around the blazing stellar glare.",
+    mainImage: "images/ic63.jpg",
+    crops: [
+      {
+        title: "IC 63 'The Ghost' Ionization Veil (High Resolution Crop)",
+        image: "images/ic63_crop.jpg",
+        description: "Delicate ghostly filamentary boundary of IC 63 sculpted by intense stellar ultraviolet radiation."
+      },
+      {
+        title: "Gamma Cassiopeiae (Navi) Star Field (High Resolution Crop)",
+        image: "images/gammacas_crop.jpg",
+        description: "Brilliant B0.5 IVe variable star Gamma Cas with Newtonian 4-vane diffraction spikes and surrounding dust."
+      }
+    ]
+  },
+  {
     id: "arp91",
     category: "galaxies",
     name: "Arp 91 & NGC 5951",
