@@ -96,5 +96,140 @@ const astroCatalog = [
         "description": "Magnified view of the dense central core resolved with the 10\" RC at 0.385\"/pixel."
       }
     ]
+  },
+  {
+    "id": "wsnb0p",
+    "astrobinHash": "wsnb0p",
+    "category": "nebulae",
+    "name": "Sh2-119 Clamshell Nebula",
+    "designation": "NGC 7044, The star 68 Cyg",
+    "constellation": "Cygnus",
+    "coords": "RA 21h 19m 21.8s | Dec +43° 57′ 21.6″",
+    "optics": "William Optics Fluorostar 91 / FLT91",
+    "mount": "Sky-Watcher EQ6-Ri Pro",
+    "camera": "ZWO ASI2600MM Pro &bull; ZWO ASI6200MM Pro &bull; Pixel scale: 1.791\"/pixel &bull; Orientation: 48.49°",
+    "exposureBreakdown": "<span class='text-[#f59e0b] font-semibold'>SII:</span> 58 × 300s (4h 50m) &bull; <span class='text-[#e06060] font-semibold'>Ha:</span> 81 × 300s (6h 45m) &bull; <span class='text-[#5ce0d8] font-semibold'>OIII:</span> 37 × 300s (3h 05m) &bull; <span class='text-[#38bdf8] font-semibold'>Blue:</span> 17 × 120s (34m) &bull; <span class='text-[#4ade80] font-semibold'>Green:</span> 16 × 120s (32m) &bull; <span class='text-[#e06060] font-semibold'>Red:</span> 24 × 120s (48m) &bull; <span class='text-[#e06060] font-semibold'>Ha:</span> 89 × 900s (22h 15m) &bull; <span class='text-[#f59e0b] font-semibold'>SII:</span> 49 × 900s (12h 15m) &bull; <span class='text-[#5ce0d8] font-semibold'>OIII:</span> 40 × 900s (10h 00m)",
+    "totalTime": "61h 04m",
+    "dates": "Jun 10, 2023 – Sep 18, 2026 (21 nights) &bull; Avg Moon Age: 7.5d (Phase: 50%)",
+    "software": "William Optics UltraFlat 91 .79x &bull; ZWO EFW 7 x 2″ &bull; ZWO OAG-L &bull; Pleiades Astrophoto PixInsight &bull; Stefan Berg Nighttime Imaging 'N' Astronomy (N.I.N.A. / NINA)",
+    "resolution": "8820 x 5983 px (File size: 23.8 MB)",
+    "fov": "Field radius: 2.651° &bull; Pixel scale: 1.791\"/pixel &bull; Orientation: 48.49°",
+    "notes": "Located at 2200 ly away from us, Sh2-119 was initially a site of major star formation activity.  But once the central O-type blue supergiant formed, the pressure of its radiation and stellar winds pushed apart and ionized the gaseous cloud, resulting in the markedly bipolar clamshell shape.",
+    "mainImage": "images/wsnb0p.jpg",
+    "crops": [
+      {
+        "title": "Sh2-119 Clamshell Nebula — Region of Interest (High Resolution Crop)",
+        "image": "images/wsnb0p_crop.jpg",
+        "description": "Full-scale detail inspection at 1.791\"/pixel."
+      }
+    ]
+  },
+  {
+    "id": "llkarc",
+    "astrobinHash": "llkarc",
+    "category": "nebulae",
+    "name": "Sh2-140 - The Poppy Flower Nebula",
+    "designation": "The star 25 Cep",
+    "constellation": "Cepheus",
+    "coords": "RA 22h 16m 50.9s | Dec +63° 08′ 16.8″",
+    "optics": "GSO 10\" F/4 Carbon Imaging Newtonian",
+    "mount": "ZWO AM5N",
+    "camera": "ZWO ASI2600MC Pro &bull; Pixel scale: 0.896\"/pixel &bull; Orientation: 178.07°",
+    "exposureBreakdown": "<span class='text-[#e06060] font-semibold'>Dual-Band (Ha/OIII):</span> 30 × 600s (5h 00m) &bull; <span class='text-white font-semibold'>Luminance:</span> 69 × 300s (5h 45m)",
+    "totalTime": "10h 45m",
+    "dates": "Sep 22, 2026, Sep 23, 2026 &bull; Avg Moon Age: 11.1d (Phase: 86%)",
+    "software": "Sky-Watcher 0.86x Coma Corrector for Quattro 150P (P150F600/F4) &bull; ZWO EFW 5 x 2\" &bull; ZWO OAG-L &bull; PixInsight",
+    "resolution": "5999 x 4002 px (File size: 14.0 MB)",
+    "fov": "Field radius: 0.897° &bull; Pixel scale: 0.896\"/pixel &bull; Orientation: 178.07°",
+    "notes": "Sh2-140 the Poppy Flower visually resembles the Sh2-101 Tulip.  But there are differences between these red flowers: </p><ul><li><p>there’s only one ionizing star vs multiple O stars in the Tulip</p></li><li><p>the Tulip is twice as far at 6k LY, vs 3k LY for the Poppy</p></li><li><p>the OIII signal in the Tulip is much stronger.</p></li><li><p>there’s substantial dust presence in Sh2-140 while the Tulip is mostly an emission target</p></li></ul>",
+    "mainImage": "images/llkarc.jpg",
+    "crops": [
+      {
+        "title": "Sh2-140 - The Poppy Flower Nebula — Region of Interest (High Resolution Crop)",
+        "image": "images/llkarc_crop.jpg",
+        "description": "Full-scale detail inspection at 0.896\"/pixel."
+      }
+    ]
+  },
+  {
+    "id": "0a2f6c",
+    "astrobinHash": "0a2f6c",
+    "category": "nebulae",
+    "name": "LBN 534 \"Checkmark Nebula\" & vdB 158",
+    "designation": "The star 18 And",
+    "constellation": "Andromeda",
+    "coords": "RA 23h 36m 37.4s | Dec +49° 07′ 19.2″",
+    "optics": "William Optics Fluorostar 91 / FLT91",
+    "mount": "ZWO AM3",
+    "camera": "ZWO ASI6200MM Pro &bull; Pixel scale: 3.565\"/pixel &bull; Orientation: 358.62°",
+    "exposureBreakdown": "<span class='text-[#4ade80] font-semibold'>Green:</span> 98 × 180s (4h 54m) &bull; <span class='text-[#e06060] font-semibold'>Red:</span> 170 × 180s (8h 30m) &bull; <span class='text-[#38bdf8] font-semibold'>Blue:</span> 89 × 180s (4h 27m) &bull; <span class='text-white font-semibold'>Luminance:</span> 168 × 300s (14h 00m) &bull; <span class='text-[#e06060] font-semibold'>Ha:</span> 17 × 600s (2h 50m)",
+    "totalTime": "34h 41m",
+    "dates": "Oct 18, 2025 – Sep 22, 2026 (9 nights) &bull; Avg Moon Age: 0.1d (Phase: 14%)",
+    "software": "William Optics UltraFlat 91 .79x &bull; ZWO EFW 7 x 2″ &bull; ZWO OAG-L &bull; PixInsight",
+    "resolution": "4537 x 3052 px (File size: 8.1 MB)",
+    "fov": "Field radius: 2.707° &bull; Pixel scale: 3.565\"/pixel &bull; Orientation: 358.62°",
+    "notes": "Every now and then I venture into dust territory, even though my location is far from ideal.<br><br>LBN 534 (the \"Checkmark Nebula\") and the blue reflection nebula vdB 158 sit in the vicinity of Andromeda, Cassiopea and Lacerta. Even though I didn't use a narrowband Ha filter, Red channel data revealed very subtle, reddish background hydrogen filaments.<br><br>Interestingly, the open cluster NGC 7686 on the right may actually be just an asterism and not a real cluster.<br><br>Revision: went ahead and captured 3h of Ha signal to prepare HaLRGB version.",
+    "mainImage": "images/0a2f6c.jpg",
+    "crops": [
+      {
+        "title": "LBN 534 \"Checkmark Nebula\" & vdB 158 — Region of Interest (High Resolution Crop)",
+        "image": "images/0a2f6c_crop.jpg",
+        "description": "Full-scale detail inspection at 3.565\"/pixel."
+      }
+    ]
+  },
+  {
+    "id": "rzxgos",
+    "astrobinHash": "rzxgos",
+    "category": "nebulae",
+    "name": "Sh2-126 - Gecko, Galaxies and LBNs",
+    "designation": "The star 8 Lac, The star 10 Lac, The star 12 Lac, The star 13 Lac",
+    "constellation": "Lacerta",
+    "coords": "RA 22h 34m 24.5s | Dec +40° 28′ 04.8″",
+    "optics": "William Optics Fluorostar 91 / FLT91",
+    "mount": "ZWO AM5N",
+    "camera": "ZWO ASI6200MM Pro &bull; Pixel scale: 1.794\"/pixel &bull; Orientation: 359.02°",
+    "exposureBreakdown": "<span class='text-[#38bdf8] font-semibold'>Blue:</span> 37 × 180s (1h 51m) &bull; <span class='text-[#4ade80] font-semibold'>Green:</span> 37 × 180s (1h 51m) &bull; <span class='text-[#e06060] font-semibold'>Ha:</span> 41 × 600s (6h 50m) &bull; <span class='text-white font-semibold'>Luminance:</span> 266 × 180s (13h 18m) &bull; <span class='text-[#e06060] font-semibold'>Red:</span> 45 × 180s (2h 15m)",
+    "totalTime": "26h 05m",
+    "dates": "Sep 24, 2025 – Aug 20, 2026 (7 nights) &bull; Avg Moon Age: 3.9d (Phase: 21%)",
+    "software": "William Optics UltraFlat 91 .79x &bull; ZWO EFW 7 x 2″ &bull; ZWO OAG-L &bull; PixInsight",
+    "resolution": "9418 x 6184 px (File size: 24.6 MB)",
+    "fov": "Field radius: 2.808° &bull; Pixel scale: 1.794\"/pixel &bull; Orientation: 359.02°",
+    "notes": "A wide-field view centered on the Lacerta OB1 molecular cloud complex. The Ha of Sh2-126 is ionized by the massive runaway O-type star 10 Lacertae (visible near the bottom edge). <br><br>Many background galaxies, but what stood out for me was the compact WBL 682 galaxy group (~225 Mly),  and radio galaxy UGC 12064 (3C 449).  It’s a target for my RC10 now.",
+    "mainImage": "images/rzxgos.jpg",
+    "crops": [
+      {
+        "title": "Sh2-126 - Gecko, Galaxies and LBNs — Region of Interest (High Resolution Crop)",
+        "image": "images/rzxgos_crop.jpg",
+        "description": "Full-scale detail inspection at 1.794\"/pixel."
+      }
+    ]
+  },
+  {
+    "id": "tlpra3",
+    "astrobinHash": "tlpra3",
+    "category": "nebulae",
+    "name": "Sh2-154 and NGC 7419 in Cepheus",
+    "designation": "NGC 7419",
+    "constellation": "Cepheus",
+    "coords": "RA 22h 52m 31.9s | Dec +61° 14′ 52.8″",
+    "optics": "GSO 10\" F/4 Carbon Imaging Newtonian",
+    "mount": "ZWO AM5N",
+    "camera": "ZWO ASI2600MC Pro &bull; Pixel scale: 0.898\"/pixel &bull; Orientation: 359.12°",
+    "exposureBreakdown": "<span class='text-[#e06060] font-semibold'>Dual-Band (Ha/OIII):</span> 76 × 600s (12h 40m) &bull; <span class='text-white font-semibold'>Luminance:</span> 187 × 180s (9h 21m)",
+    "totalTime": "22h 01m",
+    "dates": "Aug 3, 2026 – Aug 17, 2026 (9 nights) &bull; Avg Moon Age: 1.2d (Phase: 15%)",
+    "software": "Sky-Watcher 0.86x Coma Corrector for Quattro 150P (P150F600/F4) &bull; ZWO EFW 5 x 2\" &bull; ZWO OAG-L &bull; PixInsight",
+    "resolution": "6053 x 4023 px (File size: 16.8 MB)",
+    "fov": "Field radius: 0.906° &bull; Pixel scale: 0.898\"/pixel &bull; Orientation: 359.12°",
+    "notes": "Neighboring the well-known Cave Nebula (Sh2-155), Sh2-154 never got the same type of attention. It is a rather faint, extended H II region embedded within the dense gas and dust complexes of Cepheus. Without dramatic pillars, sharp shock fronts, or prominent Bok globules, it easily gets overlooked.<br><br>NGC 7419 is a heavily reddened young open cluster. It hosts a record five red supergiants. Interstellar extinction in the blue band here is severe (well over a factor of ten), giving this cluster its distinctive warm, golden hue.",
+    "mainImage": "images/tlpra3.jpg",
+    "crops": [
+      {
+        "title": "Sh2-154 and NGC 7419 in Cepheus — Region of Interest (High Resolution Crop)",
+        "image": "images/tlpra3_crop.jpg",
+        "description": "Full-scale detail inspection at 0.898\"/pixel."
+      }
+    ]
   }
 ];
