@@ -92,23 +92,14 @@
     <!-- ========================================== -->
     <div id="view-grid" class="space-y-6">
       
-      <!-- Catalog Introduction Banner -->
-      <div class="bg-[#0e1014] border border-[#21242c] p-4 rounded-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#8c94a3]">
-        <div>
-          <span class="text-white font-semibold">Active Observational Station:</span> 
-          <span>Home Backyard Observatory (Olsztyn, Poland &bull; Bortle 5.0)</span>
-        </div>
-        <div class="flex items-center gap-4 font-mono text-[11px]">
-          <span>Total Catalogued: <strong class="text-white font-semibold" id="catalog-count">1</strong> Object</span>
-          <span class="text-[#3c4250]">|</span>
-          <span class="text-[#5ce0d8]">Updated: Autumn 2026</span>
-        </div>
-      </div>
-
       <!-- Filter status bar -->
       <div class="flex items-center justify-between border-b border-[#1c1f26] pb-2 text-xs">
-        <span class="text-[#737a87] uppercase tracking-wider font-mono">Catalog Listing &mdash; <span id="active-category-name" class="text-white">ALL TARGETS</span></span>
-        <span class="text-[#737a87]">Click thumbnail for full plate & technical exposure table</span>
+        <div class="flex items-center gap-3">
+          <span class="text-[#737a87] uppercase tracking-wider font-mono">Catalog Listing &mdash; <span id="active-category-name" class="text-white">ALL TARGETS</span></span>
+          <span class="text-[#404654] font-mono">&bull;</span>
+          <span class="text-[#8c94a3] font-mono text-[11px]"><span id="catalog-count" class="text-white font-semibold">1</span> target</span>
+        </div>
+        <span class="text-[#737a87] hidden sm:inline">Click thumbnail for full plate & technical exposure table</span>
       </div>
 
       <!-- Thumbnails Grid -->
