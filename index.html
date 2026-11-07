@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deep Sky - Astrophotography Catalog 1</title>
+  <title>Deep Sky - Astrophotography Archive</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,7 +37,7 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Classical Utilitarian Table Styling modeled after astrophoton.com */
+    /* Classical Utilitarian Table Styling modeled after astrophoton / pbase */
     .astro-table {
       width: 100%;
       border-collapse: collapse;
@@ -46,7 +46,7 @@
     }
     .astro-table th, .astro-table td {
       border: 1px solid var(--border-crisp);
-      padding: 7px 12px;
+      padding: 8px 14px;
       font-size: 0.85rem;
       text-align: left;
     }
@@ -60,17 +60,11 @@
     .astro-table td {
       color: var(--text-bright);
     }
-
-    /* Interactive image magnification loupe */
-    .magnify-container {
-      position: relative;
-      overflow: hidden;
-      cursor: crosshair;
-    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-slate-700 selection:text-white">
 
+  <!-- Header -->
   <header class="border-b border-[#20232a] bg-[#090a0c] sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-3">
       <div>
@@ -80,12 +74,12 @@
         </a>
       </div>
       
-      <!-- Hubl-style category navigation -->
+      <!-- Category navigation -->
       <nav class="flex flex-wrap items-center justify-center gap-1 md:gap-2 text-xs md:text-sm font-medium">
-        <button onclick="switchView('grid'); filterTargets('all')" class="nav-btn px-3 py-1.5 rounded text-white bg-[#1a1d24] border border-[#2e333d] hover:border-slate-500 transition">Recent Additions</button>
-        <button onclick="switchView('grid'); filterTargets('nebulae')" class="nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-white hover:bg-[#14161b] transition">Nebulae</button>
-        <button onclick="switchView('grid'); filterTargets('galaxies')" class="nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-white hover:bg-[#14161b] transition">Galaxies</button>
-        <button onclick="switchView('grid'); filterTargets('clusters')" class="nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-white hover:bg-[#14161b] transition">Star Clusters</button>
+        <button id="nav-btn-all" onclick="filterTargets('all')" class="nav-btn px-3 py-1.5 rounded text-white bg-[#1a1d24] border border-[#2e333d] hover:border-slate-500 transition">All Targets</button>
+        <button id="nav-btn-clusters" onclick="filterTargets('clusters')" class="nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-white hover:bg-[#14161b] transition">Globular Clusters</button>
+        <button id="nav-btn-galaxies" onclick="filterTargets('galaxies')" class="nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-white hover:bg-[#14161b] transition">Galaxies</button>
+        <button id="nav-btn-nebulae" onclick="filterTargets('nebulae')" class="nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-white hover:bg-[#14161b] transition">Nebulae</button>
         <button onclick="showEquipmentModal()" class="nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-[#9dc4e8] hover:bg-[#14161b] transition">Equipment & Setup</button>
       </nav>
     </div>
@@ -102,10 +96,10 @@
       <div class="bg-[#0e1014] border border-[#21242c] p-4 rounded-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#8c94a3]">
         <div>
           <span class="text-white font-semibold">Active Observational Station:</span> 
-          <span>Remote Dual Rig (Bortle 3.5 / Dark Sky Site)</span>
+          <span>Home Backyard Observatory (Olsztyn, Poland &bull; Bortle 5.0)</span>
         </div>
         <div class="flex items-center gap-4 font-mono text-[11px]">
-          <span>Total Catalogued: <strong class="text-white font-semibold" id="catalog-count">4</strong> Objects</span>
+          <span>Total Catalogued: <strong class="text-white font-semibold" id="catalog-count">1</strong> Object</span>
           <span class="text-[#3c4250]">|</span>
           <span class="text-[#5ce0d8]">Updated: Autumn 2026</span>
         </div>
@@ -113,18 +107,18 @@
 
       <!-- Filter status bar -->
       <div class="flex items-center justify-between border-b border-[#1c1f26] pb-2 text-xs">
-        <span class="text-[#737a87] uppercase tracking-wider font-mono">Catalog Listing &mdash; <span id="active-category-name" class="text-white">All Recent Targets</span></span>
+        <span class="text-[#737a87] uppercase tracking-wider font-mono">Catalog Listing &mdash; <span id="active-category-name" class="text-white">ALL TARGETS</span></span>
         <span class="text-[#737a87]">Click thumbnail for full plate & technical exposure table</span>
       </div>
 
-      <!-- Thumbnails Grid (Hubl style: neat, information-dense, high readability) -->
+      <!-- Thumbnails Grid -->
       <div id="grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <!-- Target cards populated by JS -->
       </div>
     </div>
 
     <!-- ========================================== -->
-    <!-- VIEW 2: TARGET DETAIL VIEW (Bernhard Hubl Style) -->
+    <!-- VIEW 2: TARGET DETAIL VIEW                 -->
     <!-- ========================================== -->
     <div id="view-detail" class="hidden space-y-6">
       
@@ -133,19 +127,19 @@
         <div class="flex items-center space-x-2 text-[#7f8796]">
           <button onclick="switchView('grid')" class="hover:text-white underline">&larr; Back to Catalog Grid</button>
           <span>/</span>
-          <span id="detail-category-badge" class="text-[#9dc4e8]">Nebulae</span>
+          <span id="detail-category-badge" class="text-[#9dc4e8]">Globular Clusters</span>
           <span>/</span>
-          <span id="detail-breadcrumb-title" class="text-white font-semibold">Sh2-154 & NGC 7419</span>
+          <span id="detail-breadcrumb-title" class="text-white font-semibold">NGC 2419</span>
         </div>
         <div class="text-[11px] text-[#636c7c] hidden sm:block">
-          Catalog Ref: <span id="detail-ref-code" class="text-white">SH2-154</span>
+          Catalog Ref: <span id="detail-ref-code" class="text-white">NGC 2419</span>
         </div>
       </div>
 
       <!-- Title & Basic Classification Header -->
       <div class="text-center py-2 space-y-1">
-        <h1 id="detail-title" class="text-2xl md:text-3xl font-bold tracking-tight text-white">Sh2-154 & Open Cluster NGC 7419</h1>
-        <p id="detail-subtitle" class="text-xs md:text-sm text-[#8f96a3]">Diffuse Emission Nebula & Highly Reddened Supergiant Cluster in Cepheus</p>
+        <h1 id="detail-title" class="text-2xl md:text-3xl font-bold tracking-tight text-white">NGC 2419 (Intergalactic Wanderer)</h1>
+        <p id="detail-subtitle" class="text-xs md:text-sm text-[#8f96a3]">Remote Luminous Globular Cluster in Lynx</p>
       </div>
 
       <!-- Main Plate Image Display Container -->
@@ -159,7 +153,7 @@
               Full Plate View
             </span>
             <span class="text-[#3c4250]">|</span>
-            <span id="plate-dimensions">Dimensions: 3400 x 2300 px</span>
+            <span id="plate-dimensions">Dimensions: 5811 x 3675 px</span>
           </div>
           <div class="flex items-center gap-2">
             <button onclick="toggleInvertPlate()" class="px-2 py-1 bg-[#14161b] hover:bg-[#1d2028] text-white border border-[#2b2f38] rounded text-[11px] transition">
@@ -168,35 +162,37 @@
           </div>
         </div>
 
-        <!-- Main Image Element with SVG Fallback -->
+        <!-- Main Image Element -->
         <div class="relative w-full flex justify-center bg-black overflow-hidden rounded">
           <img 
             id="detail-main-image" 
             src="" 
             alt="Deep Sky Object Plate" 
-            class="w-full max-h-[750px] object-contain transition-all duration-200"
+            class="w-full max-h-[800px] object-contain transition-all duration-200"
           />
         </div>
-        <div class="w-full text-right pt-2 px-1 text-[11px] text-[#676f7d] font-mono">
-          Plate solving FOV: ~ 124' x 84' &bull; North is up, East is left
+        <div id="plate-fov" class="w-full text-right pt-2 px-1 text-[11px] text-[#676f7d] font-mono">
+          Field radius: 0.368° &bull; Pixel scale: 0.385"/pixel &bull; Orientation: 45.04°
         </div>
       </div>
 
+      <!-- 100% Crop Details -->
       <div class="space-y-3">
         <div class="border-b border-[#21252d] pb-1.5 flex items-baseline justify-between">
-          <h2 class="text-sm font-semibold uppercase tracking-wider text-white font-mono">100% Resolution Crop Details</h2>
-          <span class="text-xs text-[#737a87]">Inspecting optical resolution and faint background structures</span>
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-white font-mono">High Resolution Crop Details</h2>
+          <span class="text-xs text-[#737a87]">Inspecting optical resolution and core stellar density</span>
         </div>
 
         <div id="crop-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Populated by JavaScript for the active target -->
+          <!-- Populated by JavaScript -->
         </div>
       </div>
 
+      <!-- Technical Exposure & Acquisition Data Table -->
       <div class="space-y-3 pt-2">
         <div class="border-b border-[#21252d] pb-1.5 flex items-baseline justify-between">
           <h2 class="text-sm font-semibold uppercase tracking-wider text-white font-mono">Technical Acquisition & Exposure Data</h2>
-          <span class="text-xs text-[#737a87]">Verified calibrated master integration</span>
+          <span class="text-xs text-[#737a87]">Calibrated master integration (AstroBin verified)</span>
         </div>
 
         <div class="overflow-x-auto">
@@ -204,47 +200,45 @@
             <tbody>
               <tr>
                 <th>Object Name</th>
-                <td id="meta-object">Sh2-154 / LBN 527</td>
+                <td id="meta-object">NGC 2419 (Caldwell 25 / Intergalactic Wanderer)</td>
               </tr>
               <tr>
                 <th>Constellation & Coordinates</th>
-                <td id="meta-coords">Cepheus &bull; RA 22h 54m 12s | Dec +58° 50′ 10″</td>
+                <td id="meta-coords">Lynx &bull; RA 07h 37m 57.77s | Dec +38° 52′ 49.3″</td>
               </tr>
               <tr>
-                <th>Telescope / Optical Train</th>
-                <td id="meta-optics">TS-Optics CF-APO 102mm f/7 FPL53 triplet with 0.8x Reducer (571mm, f/5.6)</td>
+                <th>Telescope / Optics</th>
+                <td id="meta-optics">GSO 10" f/8 Ritchey-Chretien (2000mm focal length, f/8)</td>
               </tr>
               <tr>
                 <th>Mount & Guiding</th>
-                <td id="meta-mount">ZWO AM5 Harmonic Mount &bull; OAG with ASI220MM Mini (RMS 0.38")</td>
+                <td id="meta-mount">Sky-Watcher EQ6-Ri Pro &bull; ZWO OAG-L &bull; ZWO CAA Camera Angle Adjuster</td>
               </tr>
               <tr>
-                <th>Camera & Cooling</th>
-                <td id="meta-camera">ZWO ASI2600MM Pro &bull; -10°C, Gain 100, Offset 30</td>
+                <th>Camera & Sensor Details</th>
+                <td id="meta-camera">ZWO ASI2600MM Pro &bull; Pixel scale: 0.385 arcsec/pixel</td>
               </tr>
               <tr>
                 <th>Filters & Sub-Exposures</th>
                 <td id="meta-exposure-breakdown" class="leading-relaxed">
-                  <span class="text-[#e06060] font-semibold">Ha:</span> 38 x 600s (6h 20m) &bull; 
-                  <span class="text-[#5ce0d8] font-semibold">OIII:</span> 24 x 600s (4h 00m) &bull; 
-                  <span class="text-[#ffd166] font-semibold">RGB:</span> 30 x 120s each (3h 00m)
+                  <!-- Populated by JS -->
                 </td>
               </tr>
               <tr>
                 <th>Total Exposure Integration</th>
-                <td id="meta-total-time" class="font-bold text-white">13 Hours 20 Minutes</td>
+                <td id="meta-total-time" class="font-bold text-white">12 Hours 40 Minutes</td>
               </tr>
               <tr>
                 <th>Observing Date(s) & Moon</th>
-                <td id="meta-dates">September 4, 8 & 12, 2026 &bull; Moon 0% to 18% illumination</td>
+                <td id="meta-dates">Apr 2–3 2023, Apr 11 2025, Apr 3, 19–20, 29 2026 &bull; Avg Moon Age: 11.11d (Phase: 69.96%)</td>
               </tr>
               <tr>
                 <th>Location & Sky Quality</th>
-                <td id="meta-location">Bortle Class 3 (SQM 21.65 mag/arcsec²), Average Seeing 1.8" FWHM</td>
+                <td id="meta-location">Home Backyard, Olsztyn, Poland &bull; Bortle Dark-Sky Scale: 5.00</td>
               </tr>
               <tr>
-                <th>Processing Software</th>
-                <td id="meta-software">PixInsight (WBPP, BlurXTerminator, StarXTerminator, NoiseXTerminator, Generalized Hyperbolic Stretch), Affinity Photo</td>
+                <th>Accessories & Software</th>
+                <td id="meta-software">ZWO EFW 7 x 2" &bull; PixInsight &bull; WCS: DDM Thin Plate Spline</td>
               </tr>
             </tbody>
           </table>
@@ -263,6 +257,7 @@
 
   </main>
 
+  <!-- Equipment & Observatory Modal -->
   <div id="equipment-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden flex items-center justify-center p-4">
     <div class="bg-[#0e1014] border border-[#2b303a] rounded max-w-2xl w-full p-6 space-y-4 shadow-2xl font-mono text-xs">
       <div class="flex items-center justify-between border-b border-[#21252e] pb-3">
@@ -272,23 +267,18 @@
 
       <div class="space-y-4 text-[#aab1be]">
         <div>
-          <h4 class="text-white font-bold mb-1">// RIG 1: WIDEFIELD NARROWBAND / BROADBAND</h4>
-          <p class="text-[#848c9c]">Optics: 102mm f/5.6 Quad/Triplet Refractor (571mm focal length)</p>
-          <p class="text-[#848c9c]">Camera: ZWO ASI2600MM Pro (-10°C, 3.76µm pixel pitch)</p>
-          <p class="text-[#848c9c]">Filters: Chroma 3nm H-Alpha, OIII, SII, Unmounted LRGB (36mm)</p>
+          <h4 class="text-white font-bold mb-1">// PRIMARY IMAGING RIG</h4>
+          <p class="text-[#848c9c]">Optics: GSO 10" f/8 Ritchey-Chretien (2000mm focal length)</p>
+          <p class="text-[#848c9c]">Camera: ZWO ASI2600MM Pro (APS-C Back-Illuminated Mono CMOS)</p>
+          <p class="text-[#848c9c]">Mount: Sky-Watcher EQ6-Ri Pro</p>
+          <p class="text-[#848c9c]">Filters: Antlia V-Pro 2" (Luminance, Red, Green, Blue)</p>
+          <p class="text-[#848c9c]">Accessories: ZWO CAA Camera Angle Adjuster &bull; ZWO EFW 7 x 2" &bull; ZWO OAG-L</p>
         </div>
 
         <div>
-          <h4 class="text-white font-bold mb-1">// RIG 2: HIGH RESOLUTION RESOLVER</h4>
-          <p class="text-[#848c9c]">Optics: 250mm (10-inch) f/4 Newton with GPU Coma Corrector (1000mm)</p>
-          <p class="text-[#848c9c]">Camera: QHY 268M / ASI533MM Pro for compact cores</p>
-          <p class="text-[#848c9c]">Mount: SW EQ6-R Pro on permanent steel pier</p>
-        </div>
-
-        <div>
-          <h4 class="text-white font-bold mb-1">// SITE CONDITIONS</h4>
-          <p class="text-[#848c9c]">Location: Warmian-Masurian Dark Sky Boundary, Poland</p>
-          <p class="text-[#848c9c]">Typical Zenith Darkness: 21.65 - 21.80 SQM &bull; Elevation: 145m</p>
+          <h4 class="text-white font-bold mb-1">// OBSERVING LOCATION & SKY</h4>
+          <p class="text-[#848c9c]">Location: Home Backyard, Olsztyn, Poland</p>
+          <p class="text-[#848c9c]">Typical Sky Quality: Bortle Class 5.0</p>
         </div>
       </div>
 
@@ -300,121 +290,38 @@
 
   <footer class="border-t border-[#1a1c22] bg-[#07080a] py-6 text-center text-xs text-[#5f6675] font-mono">
     <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-      <p>&copy; Astrophotography Observational Archive &bull; Uncompressed Raw Calibrated Pipeline</p>
-      <p class="text-[11px] text-[#4d5360]">Built for permanent static catalog hosting</p>
+      <p>&copy; Astrophotography Observational Archive &bull; Uncompressed Calibrated Pipeline</p>
+      <p class="text-[11px] text-[#4d5360]">Hosted via GitHub Pages</p>
     </div>
   </footer>
 
   <script>
-    // In-memory catalog dataset (Easy to edit, replace, or export to JSON)
+    // Live catalog dataset
     const astroCatalog = [
       {
-        id: "sh2-154",
-        category: "nebulae",
-        name: "Sh2-154 & NGC 7419",
-        designation: "Sharpless 154 / LBN 527",
-        constellation: "Cepheus",
-        coords: "RA 22h 54m 15s | Dec +58° 49′ 40″",
-        optics: "TS-Optics CF-APO 102mm f/7 with 0.8x Reducer (571mm f/5.6)",
-        mount: "ZWO AM5 Harmonic Mount &bull; OAG Guiding (RMS 0.38\")",
-        camera: "ZWO ASI2600MM Pro (-10°C, Gain 100)",
-        exposureBreakdown: "<span class='text-[#e06060]'>Ha:</span> 38x600s (6h 20m) &bull; <span class='text-[#5ce0d8]'>OIII:</span> 24x600s (4h 00m) &bull; <span class='text-[#ffd166]'>RGB:</span> 30x120s each (3h 00m)",
-        totalTime: "13h 20m",
-        dates: "September 4–12, 2026 &bull; Moon: 0–18%",
-        location: "Dark Sky Site, Poland (Bortle 3, SQM 21.65)",
-        software: "PixInsight (WBPP, BlurX, StarX, NoiseX, GHS)",
-        notes: "Sh2-154 is a faint, sprawling emission nebula energized by the nearby Cepheus OB1 association. Embedded in the field is NGC 7419, an exceptionally red open cluster known for harboring 5 red supergiants—one of the highest concentrations known in our Galaxy. Ha captures the delicate filamentary ionization shock front, while RGB star frames recover the intense extinction and reddening caused by intervening interstellar dust.",
-        mainImage: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1800&q=85",
-        crops: [
-          {
-            title: "NGC 7419 Supergiant Cluster (100% Crop)",
-            image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80",
-            description: "High magnification inspection of the reddened core stars and stellar resolution."
-          },
-          {
-            title: "Sh2-154 Ionization Boundary (100% Crop)",
-            image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=80",
-            description: "Hydrogen-Alpha shockfront interacting with local molecular dark clouds."
-          }
-        ]
-      },
-      {
-        id: "m87",
-        category: "galaxies",
-        name: "Messier 87 & Relativistic Jet",
-        designation: "NGC 4486 / Virgo A",
-        constellation: "Virgo",
-        coords: "RA 12h 30m 49s | Dec +12° 23′ 28″",
-        optics: "250mm f/4 Newton with Coma Corrector (1000mm focal length)",
-        mount: "Sky-Watcher EQ6-R Pro on Fixed Steel Pier",
-        camera: "QHY 268M Pro CMOS (-15°C, Mode 0)",
-        exposureBreakdown: "L: 60x180s (3h) &bull; RGB: 20x180s each (3h) &bull; Short L (Core): 120x10s (20m)",
-        totalTime: "6h 20m",
-        dates: "April 18, 2026 &bull; Clear seeing, FWHM 1.55\"",
-        location: "Observatory Pier (SQM 21.40)",
-        software: "PixInsight & HDR Composition",
-        notes: "M87 is a supergiant elliptical galaxy anchored in the heart of the Virgo cluster. A specialized HDR short-exposure series was blended into the luminance stack to resolve the famous synchrotron relativistic plasma jet emerging from the central supermassive black hole without blowing out the dense stellar nucleus.",
-        mainImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1800&q=85",
-        crops: [
-          {
-            title: "Relativistic Synchrotron Jet (200% Scaled Crop)",
-            image: "https://images.unsplash.com/photo-1543722530-d2c3201371e7?auto=format&fit=crop&w=800&q=80",
-            description: "Blue optical jet extending over 5,000 light-years from the core."
-          },
-          {
-            title: "Globular Cluster Cloud Halo (100% Crop)",
-            image: "https://images.unsplash.com/photo-1502134249126-9f3755a50d78?auto=format&fit=crop&w=800&q=80",
-            description: "Dozens of point-source globular clusters orbiting within M87's vast envelope."
-          }
-        ]
-      },
-      {
-        id: "ngc7000",
-        category: "nebulae",
-        name: "North America Nebula & Cygnus Wall",
-        designation: "NGC 7000 / Caldwell 20",
-        constellation: "Cygnus",
-        coords: "RA 20h 58m 47s | Dec +44° 19′ 48″",
-        optics: "102mm f/5.6 Refractor (571mm)",
-        mount: "ZWO AM5",
-        camera: "ZWO ASI2600MM Pro",
-        exposureBreakdown: "Ha: 30x300s &bull; OIII: 30x300s &bull; SII: 24x300s (Total SHO)",
-        totalTime: "7h 00m",
-        dates: "August 14, 2026",
-        location: "Dark Sky Site, Poland",
-        software: "PixInsight, Narrowband Normalization, BlurX",
-        notes: "Deep narrowband palette emphasizing the intense stellar erosion front in the Cygnus Wall (Mexico region of NGC 7000). Highly ionised OIII creates the cyan ionization boundaries clashing with deep sulfur ridges.",
-        mainImage: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1800&q=85",
-        crops: [
-          {
-            title: "The Cygnus Wall Erosion Front",
-            image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=80",
-            description: "High-density pillar formation sculpted by intense UV radiation."
-          }
-        ]
-      },
-      {
-        id: "m45",
+        id: "ngc2419",
         category: "clusters",
-        name: "Pleiades Reflection Complex",
-        designation: "Messier 45 / Seven Sisters",
-        constellation: "Taurus",
-        coords: "RA 03h 47m 24s | Dec +24° 07′ 00″",
-        optics: "102mm f/5.6 Refractor",
-        mount: "ZWO AM5",
-        camera: "ZWO ASI2600MM Pro",
-        exposureBreakdown: "L: 80x120s &bull; R: 25x120s &bull; G: 25x120s &bull; B: 30x120s",
-        totalTime: "5h 20m",
-        dates: "November 03, 2026",
-        location: "Dark Sky Site, Poland (Bortle 3)",
-        software: "PixInsight (StarXTerminator, GHS, Color Calibration)",
-        notes: "High SNR broadband sequence revealing the delicate wispy filamentation of the reflection nebulosity (Merope and Maia nebulae) passing through the open cluster.",
-        mainImage: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1800&q=85",
+        name: "NGC 2419 (Intergalactic Wanderer)",
+        designation: "NGC 2419 / Caldwell 25 / GCl 12",
+        constellation: "Lynx",
+        coords: "RA 07h 37m 57.77s | Dec +38° 52′ 49.3″",
+        optics: "GSO 10\" f/8 Ritchey-Chretien (2000mm focal length, f/8)",
+        mount: "Sky-Watcher EQ6-Ri Pro &bull; ZWO OAG-L &bull; ZWO CAA Camera Angle Adjuster",
+        camera: "ZWO ASI2600MM Pro &bull; Pixel scale: 0.385\"/pixel &bull; Orientation: 45.04°",
+        exposureBreakdown: "<span class='text-white font-semibold'>Luminance:</span> 52 × 300s (4h 20m) &bull; <span class='text-[#e06060] font-semibold'>Red:</span> 41 × 300s (3h 25m) &bull; <span class='text-[#4ade80] font-semibold'>Green:</span> 31 × 300s (2h 35m) &bull; <span class='text-[#38bdf8] font-semibold'>Blue:</span> 28 × 300s (2h 20m)",
+        totalTime: "12h 40m",
+        dates: "Apr 2–3 2023, Apr 11 2025, Apr 3, 19–20, 29 2026 &bull; Avg Moon Age: 11.11d (Phase: 69.96%)",
+        location: "Home Backyard, Olsztyn, Poland &bull; Bortle 5.0",
+        software: "ZWO EFW 7 x 2\" &bull; PixInsight &bull; WCS: DDM Thin Plate Spline",
+        resolution: "5811 x 3675 px (File size: 11.8 MB)",
+        fov: "Field radius: 0.368° &bull; Pixel scale: 0.385\"/pixel &bull; Orientation: 45.04°",
+        notes: "NGC 2419 (Caldwell 25), dubbed the 'Intergalactic Wanderer' by astronomer Harlow Shapley, is one of the most distant and intrinsically luminous globular clusters associated with the Milky Way. Located roughly 300,000 light-years from Earth and the Galactic Center—farther out than the Magellanic Clouds—it takes approximately 3 billion years to complete a single galactic orbit. Captured through a 10\" Ritchey-Chrétien telescope at a high resolution of 0.385 arcsec/pixel, revealing the dense stellar swarm of aging Population II stars surrounded by an array of distant background field stars and faint galaxies.",
+        mainImage: "images/ngc2419.jpg",
         crops: [
           {
-            title: "Merope Nebula (IC 349) Filamentation",
-            image: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80",
-            description: "Parallel striations produced by interstellar dust grains."
+            title: "NGC 2419 Cluster Core & Stellar Halo (High Resolution Crop)",
+            image: "images/ngc2419_crop.jpg",
+            description: "Magnified view of the dense central core resolved with the 10\" RC at 0.385\"/pixel."
           }
         ]
       }
@@ -429,7 +336,34 @@
         : astroCatalog.filter(item => item.category === filter);
 
       document.getElementById("catalog-count").textContent = filtered.length;
-      document.getElementById("active-category-name").textContent = filter.toUpperCase();
+      
+      const labelMap = {
+        all: "ALL TARGETS",
+        clusters: "GLOBULAR CLUSTERS",
+        galaxies: "GALAXIES",
+        nebulae: "NEBULAE"
+      };
+      document.getElementById("active-category-name").textContent = labelMap[filter] || filter.toUpperCase();
+
+      // Update active nav button styles
+      ['all', 'clusters', 'galaxies', 'nebulae'].forEach(cat => {
+        const btn = document.getElementById(`nav-btn-${cat}`);
+        if (!btn) return;
+        if (cat === filter) {
+          btn.className = "nav-btn px-3 py-1.5 rounded text-white bg-[#1a1d24] border border-[#2e333d] hover:border-slate-500 transition";
+        } else {
+          btn.className = "nav-btn px-3 py-1.5 rounded text-[#a6adb9] hover:text-white hover:bg-[#14161b] transition";
+        }
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full py-16 text-center text-xs font-mono text-[#636b79] border border-dashed border-[#1c1f26] rounded">
+            No objects currently catalogued under this category.
+          </div>
+        `;
+        return;
+      }
 
       filtered.forEach(item => {
         const card = document.createElement("div");
@@ -458,7 +392,7 @@
             <div class="pt-2 border-t border-[#181a20] text-[11px] font-mono text-[#78808f] space-y-0.5">
               <div>Constellation: <span class="text-[#c2c8d4]">${item.constellation}</span></div>
               <div class="truncate">Optic: <span class="text-[#c2c8d4]">${item.optics.split('(')[0]}</span></div>
-              <div>Captured: <span class="text-[#969ea9]">${item.dates.split('&')[0]}</span></div>
+              <div>Captured: <span class="text-[#969ea9]">12h 40m (L: 52, R: 41, G: 31, B: 28)</span></div>
             </div>
           </div>
         `;
@@ -474,25 +408,31 @@
       document.getElementById("detail-title").textContent = item.name;
       document.getElementById("detail-subtitle").textContent = item.notes.split('.')[0] + '.';
       document.getElementById("detail-breadcrumb-title").textContent = item.name;
-      document.getElementById("detail-category-badge").textContent = item.category.toUpperCase();
+      document.getElementById("detail-category-badge").textContent = item.category === "clusters" ? "Globular Clusters" : item.category.toUpperCase();
       document.getElementById("detail-ref-code").textContent = item.id.toUpperCase();
 
-      // Main image
+      // Main image & plate specs
       const mainImg = document.getElementById("detail-main-image");
       mainImg.src = item.mainImage;
       mainImg.style.filter = "none";
+      if (item.resolution) {
+        document.getElementById("plate-dimensions").textContent = "Dimensions: " + item.resolution;
+      }
+      if (item.fov) {
+        document.getElementById("plate-fov").innerHTML = item.fov;
+      }
 
       // Populate metadata table
       document.getElementById("meta-object").textContent = `${item.name} (${item.designation})`;
       document.getElementById("meta-coords").innerHTML = `${item.constellation} &bull; ${item.coords}`;
       document.getElementById("meta-optics").textContent = item.optics;
       document.getElementById("meta-mount").innerHTML = item.mount;
-      document.getElementById("meta-camera").textContent = item.camera;
+      document.getElementById("meta-camera").innerHTML = item.camera;
       document.getElementById("meta-exposure-breakdown").innerHTML = item.exposureBreakdown;
       document.getElementById("meta-total-time").textContent = item.totalTime;
       document.getElementById("meta-dates").innerHTML = item.dates;
       document.getElementById("meta-location").textContent = item.location;
-      document.getElementById("meta-software").textContent = item.software;
+      document.getElementById("meta-software").innerHTML = item.software;
       document.getElementById("meta-notes").innerHTML = `<p>${item.notes}</p>`;
 
       // Populate crops
@@ -514,7 +454,7 @@
           cropContainer.appendChild(div);
         });
       } else {
-        cropContainer.innerHTML = `<div class="text-xs text-[#626976] font-mono italic">No isolated 100% crops catalogued for this object.</div>`;
+        cropContainer.innerHTML = `<div class="text-xs text-[#626976] font-mono italic">No isolated crops catalogued for this object.</div>`;
       }
 
       switchView("detail");
@@ -540,7 +480,7 @@
       switchView("grid");
     }
 
-    // Invert Luma filter toggle for faint dust inspection
+    // Invert Luma filter toggle
     let isInverted = false;
     function toggleInvertPlate() {
       const img = document.getElementById("detail-main-image");
