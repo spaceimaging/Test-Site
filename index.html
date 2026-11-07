@@ -150,8 +150,8 @@
             <button onclick="openLightbox()" class="px-2.5 py-1 bg-[#1a1f29] hover:bg-[#252d3d] text-[#5ce0d8] border border-[#2d3a4d] rounded text-[11px] font-semibold transition flex items-center gap-1.5">
               <span>🔍</span> Fullscreen Zoom & Pan
             </button>
-            <button onclick="toggleInvertPlate()" class="px-2 py-1 bg-[#14161b] hover:bg-[#1d2028] text-white border border-[#2b2f38] rounded text-[11px] transition">
-              Invert Luma (Stars/Dust)
+            <button id="detail-bw-btn" onclick="toggleBWPlate()" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#1d2028] text-white border border-[#2b2f38] rounded text-[11px] transition flex items-center gap-1">
+              <span>◐</span> Black &amp; White
             </button>
           </div>
         </div>
@@ -267,7 +267,7 @@
         <button onclick="stepZoom(0.77)" title="Zoom Out (-)" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#20242e] text-white border border-[#2b2f38] rounded transition text-sm font-bold">&minus;</button>
         <button onclick="resetZoom1to1()" title="Actual Pixels (100%)" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#20242e] text-white border border-[#2b2f38] rounded text-xs transition hidden sm:inline">1:1</button>
         <button onclick="fitToScreen()" title="Fit to Screen" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#20242e] text-white border border-[#2b2f38] rounded text-xs transition">Fit</button>
-        <button onclick="toggleInvertLightbox()" title="Invert Luma" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#20242e] text-white border border-[#2b2f38] rounded text-xs transition hidden md:inline">Invert</button>
+        <button id="lightbox-bw-btn" onclick="toggleBWLightbox()" title="Toggle Black & White (B)" class="px-2.5 py-1 bg-[#14161b] hover:bg-[#20242e] text-white border border-[#2b2f38] rounded text-xs transition hidden md:inline">◐ B&amp;W</button>
         <span class="text-[#3c4250] mx-1">|</span>
         <button onclick="closeLightbox()" title="Close (Esc)" class="px-3 py-1 bg-[#261515] hover:bg-[#381a1a] text-[#f87171] border border-[#522525] rounded transition text-xs font-bold">&times; Close</button>
       </div>
@@ -461,21 +461,19 @@
       document.getElementById("meta-software").innerHTML = item.software;
       document.getElementById("meta-notes").innerHTML = `<p>${item.notes}</p>`;
 
-      // Populate crops
+      // Populate crops (fixed high-resolution inspection windows, no zoom)
       const cropContainer = document.getElementById("crop-grid");
       cropContainer.innerHTML = "";
       if (item.crops && item.crops.length > 0) {
         item.crops.forEach(crop => {
           const div = document.createElement("div");
-          div.className = "bg-[#0b0c0f] border border-[#20242e] rounded p-2 flex flex-col space-y-2 cursor-zoom-in group";
-          div.onclick = () => openLightbox(crop.image, crop.title);
+          div.className = "bg-[#0b0c0f] border border-[#20242e] rounded p-2 flex flex-col space-y-2";
           div.innerHTML = `
-            <div class="overflow-hidden bg-black rounded max-h-[360px] flex items-center justify-center relative">
-              <img src="${crop.image}" alt="${crop.title}" class="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
-              <div class="absolute bottom-2 right-2 bg-black/75 text-white font-mono text-[10px] px-2 py-0.5 rounded border border-[#2f3542] opacity-0 group-hover:opacity-100 transition">🔍 Inspect</div>
+            <div class="overflow-hidden bg-black rounded max-h-[360px] flex items-center justify-center">
+              <img src="${crop.image}" alt="${crop.title}" class="w-full h-auto object-cover" loading="lazy" />
             </div>
             <div class="px-1 text-xs">
-              <h4 class="font-bold text-white font-mono group-hover:text-[#5ce0d8] transition-colors">${crop.title}</h4>
+              <h4 class="font-bold text-white font-mono">${crop.title}</h4>
               <p class="text-[#7e8796] text-[11px] mt-0.5">${crop.description}</p>
             </div>
           `;
@@ -484,6 +482,8 @@
       } else {
         cropContainer.innerHTML = `<div class="text-xs text-[#626976] font-mono italic">No isolated crops catalogued for this object.</div>`;
       }
+
+      resetBWPlate();
 
       switchView("detail");
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -518,9 +518,23 @@
     let isDragging = false;
     let dragStartX = 0;
     let dragStartY = 0;
-    let isLightboxInverted = false;
+    let isLightboxBW = false;
     let naturalWidth = 0;
     let naturalHeight = 0;
+
+    function updateBWLightboxButton() {
+      const btn = document.getElementById("lightbox-bw-btn");
+      if (!btn) return;
+      if (isLightboxBW) {
+        btn.classList.add("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
+        btn.classList.remove("bg-[#14161b]", "text-white", "border-[#2b2f38]");
+        btn.innerHTML = "<span>◑</span> Color";
+      } else {
+        btn.classList.remove("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
+        btn.classList.add("bg-[#14161b]", "text-white", "border-[#2b2f38]");
+        btn.innerHTML = "<span>◐</span> B&amp;W";
+      }
+    }
 
     function openLightbox(customSrc = null, customTitle = null) {
       const currentItem = astroCatalog.find(t => t.id === currentTargetId);
@@ -541,8 +555,9 @@
         fitToScreen();
       };
       img.src = src;
-      isLightboxInverted = false;
+      isLightboxBW = false;
       img.style.filter = "none";
+      updateBWLightboxButton();
     }
 
     function closeLightbox() {
@@ -624,10 +639,12 @@
       updateTransform();
     }
 
-    function toggleInvertLightbox() {
+    function toggleBWLightbox() {
       const img = document.getElementById("lightbox-image");
-      isLightboxInverted = !isLightboxInverted;
-      img.style.filter = isLightboxInverted ? "invert(1) grayscale(1) contrast(1.2)" : "none";
+      if (!img) return;
+      isLightboxBW = !isLightboxBW;
+      img.style.filter = isLightboxBW ? "grayscale(100%) contrast(1.08)" : "none";
+      updateBWLightboxButton();
     }
 
     function navigateLightbox(dir) {
@@ -747,6 +764,8 @@
           fitToScreen();
         } else if (e.key === "1") {
           resetZoom1to1();
+        } else if (e.key.toLowerCase() === "b") {
+          toggleBWLightbox();
         } else if (e.key === "ArrowLeft") {
           navigateLightbox(-1);
         } else if (e.key === "ArrowRight") {
@@ -804,12 +823,38 @@
       });
     });
 
-    // Invert Luma filter toggle
-    let isInverted = false;
-    function toggleInvertPlate() {
+    // Black & White plate filter toggle
+    let isPlateBW = false;
+    function resetBWPlate() {
+      isPlateBW = false;
       const img = document.getElementById("detail-main-image");
-      isInverted = !isInverted;
-      img.style.filter = isInverted ? "invert(1) grayscale(1) contrast(1.2)" : "none";
+      if (img) img.style.filter = "none";
+      const btn = document.getElementById("detail-bw-btn");
+      if (btn) {
+        btn.classList.remove("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
+        btn.classList.add("bg-[#14161b]", "text-white", "border-[#2b2f38]");
+        btn.innerHTML = "<span>◐</span> Black &amp; White";
+      }
+    }
+
+    function toggleBWPlate() {
+      const img = document.getElementById("detail-main-image");
+      const btn = document.getElementById("detail-bw-btn");
+      isPlateBW = !isPlateBW;
+      if (img) {
+        img.style.filter = isPlateBW ? "grayscale(100%) contrast(1.08)" : "none";
+      }
+      if (btn) {
+        if (isPlateBW) {
+          btn.classList.add("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
+          btn.classList.remove("bg-[#14161b]", "text-white", "border-[#2b2f38]");
+          btn.innerHTML = "<span>◑</span> Color (Reset B&amp;W)";
+        } else {
+          btn.classList.remove("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
+          btn.classList.add("bg-[#14161b]", "text-white", "border-[#2b2f38]");
+          btn.innerHTML = "<span>◐</span> Black &amp; White";
+        }
+      }
     }
 
     // Equipment modal toggles
