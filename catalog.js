@@ -231,5 +231,140 @@ const astroCatalog = [
         "description": "Full-scale detail inspection at 0.898\"/pixel."
       }
     ]
+  },
+  {
+    "id": "mgzg8z",
+    "astrobinHash": "mgzg8z",
+    "category": "nebulae",
+    "name": "Abell 61 Planetary Nebula in Cygnus",
+    "designation": "Abell 61 Planetary Nebula in Cygnus",
+    "constellation": "Cygnus",
+    "coords": "RA 19h 19m 11.8s | Dec +46° 14′ 45.6″",
+    "optics": "GSO 10\" f/8 Ritchey-Chretien",
+    "mount": "Sky-Watcher EQ6-Ri Pro",
+    "camera": "ZWO ASI2600MM Pro &bull; Pixel scale: 0.385\"/pixel &bull; Orientation: 359.81°",
+    "exposureBreakdown": "<span class='text-[#5ce0d8] font-semibold'>OIII:</span> 71 × 900s (17h 45m) &bull; <span class='text-[#e06060] font-semibold'>Ha:</span> 91 × 900s (22h 45m) &bull; <span class='text-[#38bdf8] font-semibold'>Blue:</span> 13 × 120s (26m) &bull; <span class='text-white font-semibold'>Luminance:</span> 13 × 120s (26m) &bull; <span class='text-[#4ade80] font-semibold'>Green:</span> 13 × 120s (26m) &bull; <span class='text-[#e06060] font-semibold'>Red:</span> 16 × 120s (32m)",
+    "totalTime": "42h 20m",
+    "dates": "Jul 16, 2026 – Aug 11, 2026 (11 nights) &bull; Avg Moon Age: 24.9d (Phase: 39%)",
+    "software": "ZWO CAA Camera Angle Adjuster &bull; ZWO EFW 7 x 36mm &bull; ZWO OAG-L &bull; Pleiades Astrophoto PixInsight",
+    "resolution": "3800 x 2500 px (File size: 4.9 MB)",
+    "fov": "Field radius: 0.243° &bull; Pixel scale: 0.385\"/pixel &bull; Orientation: 359.81°",
+    "notes": "Abell 61 (PK 077+14.1) in Cygnus is an ancient, faint planetary nebula with brightness of roughly 13.5 mag spread across an apparent diameter of ~3.3′.<br><br>Estimated to be around 22,000 years old, the nebula lies roughly 4,500–5,000 light-years away. At its center sits the clearly resolved white dwarf WD 1917+461, at a faint magnitude 17.4 with a temperature near 88,000 K.<br><br>Visible rippling along the edges is quite unique for this PN.  This asymmetric structure is caused either by the impact of local interstellar medium (ISM), or possibly from the orbital motion of binary progenitor system disrupting the envelope.  One can see distinct features in the disc, which contrasts fully smooth PN bubbles like Abell 39.<br><br>",
+    "mainImage": "images/mgzg8z.jpg",
+    "crops": [
+      {
+        "title": "Abell 61 Planetary Nebula in Cygnus — Region of Interest (High Resolution Crop)",
+        "image": "images/mgzg8z_crop.jpg",
+        "description": "Full-scale detail inspection at 0.385\"/pixel."
+      }
+    ]
+  },
+  {
+    "id": "tfjrwj",
+    "astrobinHash": "tfjrwj",
+    "category": "nebulae",
+    "name": "The Crown of Cepheus: From Sh2-139 to B174",
+    "designation": "NGC 7261, NGC 7281, The star ζ Cep, 21 Cep, The star λ Cep, 22 Cep, The star δ Cep, 27 Cep",
+    "constellation": "Cepheus",
+    "coords": "RA 22h 21m 48.7s | Dec +59° 04′ 40.8″",
+    "optics": "William Optics Fluorostar 91 / FLT91",
+    "mount": "ZWO AM3",
+    "camera": "ZWO ASI6200MM Pro &bull; Pixel scale: 2.127\"/pixel &bull; Orientation: 0.95°",
+    "exposureBreakdown": "<span class='text-[#38bdf8] font-semibold'>Blue:</span> 27 × 180s (1h 21m) &bull; <span class='text-[#4ade80] font-semibold'>Green:</span> 27 × 180s (1h 21m) &bull; <span class='text-[#e06060] font-semibold'>Red:</span> 27 × 180s (1h 21m) &bull; <span class='text-white font-semibold'>Luminance:</span> 121 × 180s (6h 03m) &bull; <span class='text-[#e06060] font-semibold'>Ha:</span> 32 × 900s (8h 00m) &bull; <span class='text-[#5ce0d8] font-semibold'>OIII:</span> 37 × 900s (9h 15m)",
+    "totalTime": "27h 21m",
+    "dates": "Aug 12, 2026 – Aug 17, 2026 (6 nights) &bull; Avg Moon Age: 2.7d (Phase: 10%)",
+    "software": "William Optics UltraFlat 91 .79x &bull; ZWO EFW 7 x 2″ &bull; ZWO OAG-L &bull; PixInsight",
+    "resolution": "8000 x 5314 px (File size: 31.7 MB)",
+    "fov": "Field radius: 2.838° &bull; Pixel scale: 2.127\"/pixel &bull; Orientation: 0.95°",
+    "notes": "A widefield effort spanning Sh2-139, Sh2-135, and Sh2-134, shrouded in blue OIII, framed against three distinct bright stars:<br><br><strong>Delta Cephei:</strong> Prototype classical Cepheid variable (white/yellow)<br><strong>Zeta Cephei:</strong> Cool orange supergiant (deep orange)<br><strong>Lambda Cephei:</strong> Massive O-type runaway supergiant (blue)<br><br>Characteristic shape of <strong>Barnard 174</strong> on the right.<br><br>I took advantage of the dark moonless weather window in mid-August and used full six-channel data set (LRGB + Ha + OIII) to resolve the mixed emission structures and dust.",
+    "mainImage": "images/tfjrwj.jpg",
+    "crops": [
+      {
+        "title": "The Crown of Cepheus: From Sh2-139 to B174 — Region of Interest (High Resolution Crop)",
+        "image": "images/tfjrwj_crop.jpg",
+        "description": "Full-scale detail inspection at 2.127\"/pixel."
+      }
+    ]
+  },
+  {
+    "id": "oifl5y",
+    "astrobinHash": "oifl5y",
+    "category": "nebulae",
+    "name": "Patchick 6 – a small spherical PN in Cygnus (PN G077.6+04.3)",
+    "designation": "Patchick 6 – a small spherical PN in Cygnus (PN G077.6+04.3)",
+    "constellation": "Cygnus",
+    "coords": "RA 20h 09m 41.0s | Dec +41° 14′ 42.0″",
+    "optics": "GSO 10\" f/8 Ritchey-Chretien",
+    "mount": "Sky-Watcher EQ6-Ri Pro",
+    "camera": "ZWO ASI2600MM Pro &bull; Pixel scale: 0.385\"/pixel &bull; Orientation: 0.07°",
+    "exposureBreakdown": "<span class='text-[#38bdf8] font-semibold'>Blue:</span> 25 × 180s (1h 15m) &bull; <span class='text-[#4ade80] font-semibold'>Green:</span> 25 × 180s (1h 15m) &bull; <span class='text-[#e06060] font-semibold'>Red:</span> 25 × 180s (1h 15m) &bull; <span class='text-white font-semibold'>Luminance:</span> 59 × 180s (2h 57m) &bull; <span class='text-[#e06060] font-semibold'>Ha:</span> 41 × 900s (10h 15m) &bull; <span class='text-[#5ce0d8] font-semibold'>OIII:</span> 54 × 900s (13h 30m)",
+    "totalTime": "30h 27m",
+    "dates": "Aug 12, 2026 – Aug 20, 2026 (7 nights) &bull; Avg Moon Age: 2.6d (Phase: 12%)",
+    "software": "ZWO CAA Camera Angle Adjuster &bull; ZWO EFW 7 x 36mm &bull; ZWO OAG-L &bull; Pleiades Astrophoto PixInsight",
+    "resolution": "1729 x 1149 px (File size: 1.3 MB)",
+    "fov": "Field radius: 0.111° &bull; Pixel scale: 0.385\"/pixel &bull; Orientation: 0.07°",
+    "notes": "Patchick 6 (PN G077.6+04.3), a small spherical bubble in Cygnus, was discovered in 2006 by Dana Patchick as part of the Deep Sky Hunters initiative.  Pa 6 is a classic, near-perfect spherical planetary nebula.  The image is a crop from a larger frame including IC 1311.<br><br>There’s definitely some similarity to the well-known Abell 39.  While Abell 39 spans an apparent diameter of roughly 160\", Pa 6 is tiny at just 35–40\" across.  In terms of integrated flux, Pa 6 (~16mag) is roughly 3 magnitudes fainter but, being more compact, it is equally bright on per pixel basis.<br><br>The crop covers a tight field of approximately 0.2 deg. At this scale, resolving any structural detail in the faint OIII shell is entirely at the mercy of local seeing and optical limits, especially since low photon flux rules out lucky-imaging.",
+    "mainImage": "images/oifl5y.jpg",
+    "crops": [
+      {
+        "title": "Patchick 6 – a small spherical PN in Cygnus (PN G077.6+04.3) — Region of Interest (High Resolution Crop)",
+        "image": "images/oifl5y_crop.jpg",
+        "description": "Full-scale detail inspection at 0.385\"/pixel."
+      }
+    ]
+  },
+  {
+    "id": "n6uj14",
+    "astrobinHash": "n6uj14",
+    "category": "nebulae",
+    "name": "LDN 974 with Bernes 27&28",
+    "designation": "NGC 7062",
+    "constellation": "Cygnus",
+    "coords": "RA 21h 21m 26.4s | Dec +46° 37′ 22.8″",
+    "optics": "GSO 10\" F/4 Carbon Imaging Newtonian",
+    "mount": "ZWO AM5N",
+    "camera": "ZWO ASI2600MC Pro &bull; Pixel scale: 0.899\"/pixel &bull; Orientation: 178.29°",
+    "exposureBreakdown": "<span class='text-white font-semibold'>Luminance:</span> 407 × 180s (20h 21m)",
+    "totalTime": "20h 21m",
+    "dates": "Jun 26, 2026 – Aug 9, 2026 (8 nights) &bull; Avg Moon Age: 9.8d (Phase: 57%)",
+    "software": "Sky-Watcher 0.86x Coma Corrector for Quattro 150P (P150F600/F4) &bull; ZWO EFW 5 x 2\" &bull; ZWO OAG-L &bull; PixInsight",
+    "resolution": "6057 x 3976 px (File size: 18.1 MB)",
+    "fov": "Field radius: 0.905° &bull; Pixel scale: 0.899\"/pixel &bull; Orientation: 178.29°",
+    "notes": "The idea for this framing came from the Cygnus wide-field image I did last year.  I saw an intriguing grouping of stars and dark clouds and decided to take a closer look.<br><br>Along the dark nebula <strong>LDN 974</strong> we see 2 distinct embedded reflection nebulae.  One is the unusually golden-brown <strong>Bernes 27</strong> and, to its right, the classic blue <strong>Bernes 28</strong>—likely active star-forming sites (Young Stellar Objects or Herbig-Haro objects).  In addition to these two, there’s an uncatalogued golden nebula Just above the blue B28.<br><br>In the upper right corner sits the young open cluster <strong>NGC 7062</strong>, located approximately 4,800 light-years away and around 300 million years old.<br><br><br><br>————<br><br>Compiled in 1977 by Swedish astronomer Claes Bernes, the Bernes Catalog lists 160 bright nebulae (primarily reflection) embedded within dense, opaque dust clouds. Around 50 of these are unique entries not previously recorded in other catalogs.",
+    "mainImage": "images/n6uj14.jpg",
+    "crops": [
+      {
+        "title": "LDN 974 with Bernes 27&28 — Region of Interest (High Resolution Crop)",
+        "image": "images/n6uj14_crop.jpg",
+        "description": "Full-scale detail inspection at 0.899\"/pixel."
+      }
+    ]
+  },
+  {
+    "id": "afnjoa",
+    "astrobinHash": "afnjoa",
+    "category": "nebulae",
+    "name": "The Leo Galaxy Cluster - Abell 1367",
+    "designation": "IC 2951, NGC 3842, NGC 3844, NGC 3860, NGC 3861, NGC 3867, NGC 3873, NGC 3875, NGC 3886",
+    "constellation": "Leo",
+    "coords": "RA 11h 44m 43.2s | Dec +19° 48′ 07.2″",
+    "optics": "William Optics Fluorostar 91 / FLT91",
+    "mount": "Sky-Watcher EQ6-Ri Pro",
+    "camera": "ZWO ASI2600MM Pro &bull; Pixel scale: 0.897\"/pixel &bull; Orientation: 150.19°",
+    "exposureBreakdown": "<span class='text-[#38bdf8] font-semibold'>Blue:</span> 46 × 180s (2h 18m) &bull; <span class='text-white font-semibold'>Luminance:</span> 142 × 180s (7h 06m) &bull; <span class='text-[#4ade80] font-semibold'>Green:</span> 71 × 180s (3h 33m) &bull; <span class='text-[#e06060] font-semibold'>Red:</span> 82 × 180s (4h 06m)",
+    "totalTime": "17h 03m",
+    "dates": "Jan 19, 2026 – Apr 8, 2026 (10 nights) &bull; Avg Moon Age: 1.3d (Phase: 42%)",
+    "software": "ZWO EFW 7 x 36mm &bull; ZWO OAG-L &bull; Pleiades Astrophoto PixInsight &bull; Stefan Berg Nighttime Imaging 'N' Astronomy (N.I.N.A. / NINA)",
+    "resolution": "5695 x 3764 px (File size: 4.5 MB)",
+    "fov": "Field radius: 0.850° &bull; Pixel scale: 0.897\"/pixel &bull; Orientation: 150.19°",
+    "notes": "The idea here was to use a short FL to show the wider setting of the <strong>Leo Cluster (A1367)</strong> and its connection with the <strong>Coma Cluster (A1656)</strong> on the opposite side of the Supercluster.<br><br>This is probably as wide as I’d go with Abell galaxy clusters.<br><br>I must say the modest refractor aperture did unexpectedly well here all things considered, same image from RC10 will provide an interesting comparison(sample included).",
+    "mainImage": "images/afnjoa.jpg",
+    "crops": [
+      {
+        "title": "The Leo Galaxy Cluster - Abell 1367 — Region of Interest (High Resolution Crop)",
+        "image": "images/afnjoa_crop.jpg",
+        "description": "Full-scale detail inspection at 0.897\"/pixel."
+      }
+    ]
   }
 ];
