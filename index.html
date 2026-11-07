@@ -254,12 +254,21 @@
 
       <div class="space-y-4 text-[#aab1be]">
         <div>
-          <h4 class="text-white font-bold mb-1">// PRIMARY IMAGING RIG</h4>
+          <h4 class="text-white font-bold mb-1">// RIG 1: GSO 10" RC</h4>
           <p class="text-[#848c9c]">Optics: GSO 10" f/8 Ritchey-Chretien (2000mm focal length)</p>
           <p class="text-[#848c9c]">Camera: ZWO ASI2600MM Pro (APS-C Back-Illuminated Mono CMOS)</p>
           <p class="text-[#848c9c]">Mount: Sky-Watcher EQ6-Ri Pro</p>
-          <p class="text-[#848c9c]">Filters: Antlia V-Pro 2" (Luminance, Red, Green, Blue)</p>
+          <p class="text-[#848c9c]">Filters: Antlia V-Pro 2" LRGB</p>
           <p class="text-[#848c9c]">Accessories: ZWO CAA Camera Angle Adjuster &bull; ZWO EFW 7 x 2" &bull; ZWO OAG-L</p>
+        </div>
+
+        <div>
+          <h4 class="text-white font-bold mb-1">// RIG 2: GSO 8" RC</h4>
+          <p class="text-[#848c9c]">Optics: GSO 8" f/8 Ritchey-Chretien (1600mm focal length)</p>
+          <p class="text-[#848c9c]">Camera: ZWO ASI533MM Pro</p>
+          <p class="text-[#848c9c]">Mount: ZWO AM5N Harmonic Mount</p>
+          <p class="text-[#848c9c]">Filters: Antlia V-Pro 36mm LRGB</p>
+          <p class="text-[#848c9c]">Accessories: ZWO OAG-L</p>
         </div>
 
         <div>
@@ -285,6 +294,37 @@
   <script>
     // Live catalog dataset
     const astroCatalog = [
+      {
+        id: "arp91",
+        category: "galaxies",
+        name: "Arp 91 & NGC 5951",
+        designation: "Arp 91 (NGC 5953 / NGC 5954) & NGC 5951",
+        constellation: "Serpens Caput",
+        coords: "RA 15h 34m 16.37s | Dec +15° 05′ 37.8″",
+        optics: "GSO 8\" f/8 Ritchey-Chretien (1600mm focal length, f/8)",
+        mount: "ZWO AM5N Harmonic Mount &bull; ZWO OAG-L",
+        camera: "ZWO ASI533MM Pro &bull; Pixel scale: 0.658\"/pixel &bull; Orientation: 0.012°",
+        exposureBreakdown: "<span class='text-white font-semibold'>Luminance:</span> 70 × 300s (5h 50m) &bull; <span class='text-[#e06060] font-semibold'>Red:</span> 31 × 180s (1h 33m) &bull; <span class='text-[#4ade80] font-semibold'>Green:</span> 31 × 180s (1h 33m) &bull; <span class='text-[#38bdf8] font-semibold'>Blue:</span> 28 × 180s (1h 24m)",
+        totalTime: "10h 20m",
+        dates: "Mar 29–30, Apr 3–4, 7, 9, 23 2025 &bull; Avg Moon Age: 4.86d (Phase: 37.94%)",
+        software: "PixInsight &bull; WCS: DDM Thin Plate Spline",
+        resolution: "2967 x 2548 px (File size: 3.3 MB)",
+        fov: "Field radius: 0.358° &bull; Pixel scale: 0.658\"/pixel &bull; Orientation: 0.012°",
+        notes: "Arp 91 is a pair of interacting galaxies, ~100 Mly distant, both ca. 12 mag.<br><br><strong>NGC 5953</strong> (below) is the face-on one appears \"amorphous\" with a central bulge and tightly wound spiral arms. It acts as the dominant gravitational force in the pair.<br><br><strong>NGC 5954</strong> (top) is inclined, with a bar structure, and looser spiral arms. It is being visibly distorted by its larger companion and there's a tidal bridge between the galaxies, made of stars, gas and dust.<br><br>Immediately below is a faint galaxy <strong>PGC 55478</strong>. It is mag. 17 and is at the limits of my RC8's reach when it comes to extended sources.<br><br>At the bottom-right we see an edge-on galaxy <strong>NGC 5951</strong>.",
+        mainImage: "images/arp91.jpg",
+        crops: [
+          {
+            title: "Arp 91 Interacting Pair (NGC 5953 & NGC 5954)",
+            image: "images/arp91_crop.jpg",
+            description: "High resolution view of the distorted spiral arms and tidal bridge between the galaxies."
+          },
+          {
+            title: "NGC 5951 Edge-On Spiral Galaxy",
+            image: "images/ngc5951_crop.jpg",
+            description: "Slender edge-on spiral galaxy showing disk structure and dust absorption."
+          }
+        ]
+      },
       {
         id: "ngc2419",
         category: "clusters",
@@ -379,7 +419,7 @@
             <div class="pt-2 border-t border-[#181a20] text-[11px] font-mono text-[#78808f] space-y-0.5">
               <div>Constellation: <span class="text-[#c2c8d4]">${item.constellation}</span></div>
               <div class="truncate">Optic: <span class="text-[#c2c8d4]">${item.optics.split('(')[0]}</span></div>
-              <div>Captured: <span class="text-[#969ea9]">12h 40m (L: 52, R: 41, G: 31, B: 28)</span></div>
+              <div>Integration: <span class="text-[#969ea9]">${item.totalTime}</span></div>
             </div>
           </div>
         `;
@@ -395,7 +435,8 @@
       document.getElementById("detail-title").textContent = item.name;
       document.getElementById("detail-subtitle").textContent = item.notes.split('.')[0] + '.';
       document.getElementById("detail-breadcrumb-title").textContent = item.name;
-      document.getElementById("detail-category-badge").textContent = item.category === "clusters" ? "Globular Clusters" : item.category.toUpperCase();
+      const catBadgeMap = { clusters: "Globular Clusters", galaxies: "Galaxies", nebulae: "Nebulae" };
+      document.getElementById("detail-category-badge").textContent = catBadgeMap[item.category] || item.category.toUpperCase();
       document.getElementById("detail-ref-code").textContent = item.id.toUpperCase();
 
       // Main image & plate specs
