@@ -441,7 +441,7 @@
       // Main image & plate specs
       const mainImg = document.getElementById("detail-main-image");
       mainImg.src = item.mainImage;
-      mainImg.style.filter = "none";
+      applyBWState();
       if (item.resolution) {
         document.getElementById("plate-dimensions").textContent = "Dimensions: " + item.resolution;
       }
@@ -483,7 +483,7 @@
         cropContainer.innerHTML = `<div class="text-xs text-[#626976] font-mono italic">No isolated crops catalogued for this object.</div>`;
       }
 
-      resetBWPlate();
+      applyBWState();
 
       switchView("detail");
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -518,23 +518,55 @@
     let isDragging = false;
     let dragStartX = 0;
     let dragStartY = 0;
-    let isLightboxBW = false;
     let naturalWidth = 0;
     let naturalHeight = 0;
 
-    function updateBWLightboxButton() {
-      const btn = document.getElementById("lightbox-bw-btn");
-      if (!btn) return;
-      if (isLightboxBW) {
-        btn.classList.add("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
-        btn.classList.remove("bg-[#14161b]", "text-white", "border-[#2b2f38]");
-        btn.innerHTML = "<span>◑</span> Color";
-      } else {
-        btn.classList.remove("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
-        btn.classList.add("bg-[#14161b]", "text-white", "border-[#2b2f38]");
-        btn.innerHTML = "<span>◐</span> B&amp;W";
+    // Unified Black & White view mode (sticky across page view and zoom lightbox)
+    let isBWMode = false;
+
+    function applyBWState() {
+      const filterVal = isBWMode ? "grayscale(100%) contrast(1.08)" : "none";
+
+      const detailImg = document.getElementById("detail-main-image");
+      if (detailImg) detailImg.style.filter = filterVal;
+
+      const lightboxImg = document.getElementById("lightbox-image");
+      if (lightboxImg) lightboxImg.style.filter = filterVal;
+
+      const detailBtn = document.getElementById("detail-bw-btn");
+      if (detailBtn) {
+        if (isBWMode) {
+          detailBtn.classList.add("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
+          detailBtn.classList.remove("bg-[#14161b]", "text-white", "border-[#2b2f38]");
+          detailBtn.innerHTML = "<span>◑</span> Color (Reset B&amp;W)";
+        } else {
+          detailBtn.classList.remove("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
+          detailBtn.classList.add("bg-[#14161b]", "text-white", "border-[#2b2f38]");
+          detailBtn.innerHTML = "<span>◐</span> Black &amp; White";
+        }
+      }
+
+      const lightboxBtn = document.getElementById("lightbox-bw-btn");
+      if (lightboxBtn) {
+        if (isBWMode) {
+          lightboxBtn.classList.add("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
+          lightboxBtn.classList.remove("bg-[#14161b]", "text-white", "border-[#2b2f38]");
+          lightboxBtn.innerHTML = "<span>◑</span> Color";
+        } else {
+          lightboxBtn.classList.remove("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
+          lightboxBtn.classList.add("bg-[#14161b]", "text-white", "border-[#2b2f38]");
+          lightboxBtn.innerHTML = "<span>◐</span> B&amp;W";
+        }
       }
     }
+
+    function toggleBW() {
+      isBWMode = !isBWMode;
+      applyBWState();
+    }
+
+    function toggleBWPlate() { toggleBW(); }
+    function toggleBWLightbox() { toggleBW(); }
 
     function openLightbox(customSrc = null, customTitle = null) {
       const currentItem = astroCatalog.find(t => t.id === currentTargetId);
@@ -555,9 +587,7 @@
         fitToScreen();
       };
       img.src = src;
-      isLightboxBW = false;
-      img.style.filter = "none";
-      updateBWLightboxButton();
+      applyBWState();
     }
 
     function closeLightbox() {
@@ -639,13 +669,7 @@
       updateTransform();
     }
 
-    function toggleBWLightbox() {
-      const img = document.getElementById("lightbox-image");
-      if (!img) return;
-      isLightboxBW = !isLightboxBW;
-      img.style.filter = isLightboxBW ? "grayscale(100%) contrast(1.08)" : "none";
-      updateBWLightboxButton();
-    }
+
 
     function navigateLightbox(dir) {
       if (!currentTargetId) return;
@@ -823,39 +847,7 @@
       });
     });
 
-    // Black & White plate filter toggle
-    let isPlateBW = false;
-    function resetBWPlate() {
-      isPlateBW = false;
-      const img = document.getElementById("detail-main-image");
-      if (img) img.style.filter = "none";
-      const btn = document.getElementById("detail-bw-btn");
-      if (btn) {
-        btn.classList.remove("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
-        btn.classList.add("bg-[#14161b]", "text-white", "border-[#2b2f38]");
-        btn.innerHTML = "<span>◐</span> Black &amp; White";
-      }
-    }
 
-    function toggleBWPlate() {
-      const img = document.getElementById("detail-main-image");
-      const btn = document.getElementById("detail-bw-btn");
-      isPlateBW = !isPlateBW;
-      if (img) {
-        img.style.filter = isPlateBW ? "grayscale(100%) contrast(1.08)" : "none";
-      }
-      if (btn) {
-        if (isPlateBW) {
-          btn.classList.add("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
-          btn.classList.remove("bg-[#14161b]", "text-white", "border-[#2b2f38]");
-          btn.innerHTML = "<span>◑</span> Color (Reset B&amp;W)";
-        } else {
-          btn.classList.remove("bg-[#1e2533]", "text-[#5ce0d8]", "border-[#3f4f6e]");
-          btn.classList.add("bg-[#14161b]", "text-white", "border-[#2b2f38]");
-          btn.innerHTML = "<span>◐</span> Black &amp; White";
-        }
-      }
-    }
 
     // Equipment modal toggles
     function showEquipmentModal() {
