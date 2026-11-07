@@ -551,6 +551,37 @@
       document.body.classList.remove("overflow-hidden");
     }
 
+    function getMinScale() {
+      const vp = document.getElementById("lightbox-viewport");
+      if (!vp) return 0.5;
+      const vpW = Math.max(100, vp.clientWidth - 40);
+      const vpH = Math.max(100, vp.clientHeight - 40);
+      const imgW = naturalWidth || 2560;
+      const imgH = naturalHeight || 1728;
+      return Math.min(vpW / imgW, vpH / imgH, 1.0);
+    }
+
+    function clampPan() {
+      const vp = document.getElementById("lightbox-viewport");
+      if (!vp) return;
+      const minScale = getMinScale();
+      if (zoomScale <= minScale + 0.001) {
+        panX = 0;
+        panY = 0;
+        return;
+      }
+      const vpW = vp.clientWidth;
+      const vpH = vp.clientHeight;
+      const imgW = (naturalWidth || 2560) * zoomScale;
+      const imgH = (naturalHeight || 1728) * zoomScale;
+
+      const maxPanX = Math.max(0, (imgW - vpW) / 2);
+      const maxPanY = Math.max(0, (imgH - vpH) / 2);
+
+      panX = Math.max(-maxPanX, Math.min(maxPanX, panX));
+      panY = Math.max(-maxPanY, Math.min(maxPanY, panY));
+    }
+
     function updateTransform() {
       const img = document.getElementById("lightbox-image");
       if (!img) return;
@@ -559,32 +590,37 @@
     }
 
     function fitToScreen() {
-      const vp = document.getElementById("lightbox-viewport");
-      const img = document.getElementById("lightbox-image");
-      if (!vp || !img) return;
-
-      const vpW = vp.clientWidth - 40;
-      const vpH = vp.clientHeight - 40;
-      const imgW = naturalWidth || 2560;
-      const imgH = naturalHeight || 1728;
-
-      const scaleW = vpW / imgW;
-      const scaleH = vpH / imgH;
-      zoomScale = Math.min(scaleW, scaleH, 1.0);
+      zoomScale = getMinScale();
       panX = 0;
       panY = 0;
       updateTransform();
     }
 
     function resetZoom1to1() {
-      zoomScale = 1.0;
+      const minScale = getMinScale();
+      zoomScale = Math.max(minScale, 1.0);
       panX = 0;
       panY = 0;
+      clampPan();
       updateTransform();
     }
 
     function stepZoom(factor) {
-      zoomScale = Math.max(0.15, Math.min(8.0, zoomScale * factor));
+      const minScale = getMinScale();
+      const maxScale = 8.0;
+      let newScale = zoomScale * factor;
+      if (newScale <= minScale) {
+        zoomScale = minScale;
+        panX = 0;
+        panY = 0;
+      } else {
+        newScale = Math.min(maxScale, newScale);
+        const actualFactor = newScale / zoomScale;
+        panX *= actualFactor;
+        panY *= actualFactor;
+        zoomScale = newScale;
+        clampPan();
+      }
       updateTransform();
     }
 
@@ -624,6 +660,7 @@
         if (!isDragging) return;
         panX = e.clientX - dragStartX;
         panY = e.clientY - dragStartY;
+        clampPan();
         updateTransform();
       });
 
@@ -631,32 +668,67 @@
         isDragging = false;
       });
 
-      // Smooth focal zoom on scroll wheel
+      // Smooth focal zoom on scroll wheel (clamped to fit-scale minimum)
       vp.addEventListener("wheel", (e) => {
         e.preventDefault();
+        const minScale = getMinScale();
+        const maxScale = 8.0;
+
+        const factor = e.deltaY < 0 ? 1.15 : 0.87;
+        let newScale = zoomScale * factor;
+
+        // Never zoom out smaller than fit to screen (prevent disappearing)
+        if (newScale <= minScale) {
+          zoomScale = minScale;
+          panX = 0;
+          panY = 0;
+          updateTransform();
+          return;
+        }
+
+        if (newScale > maxScale) {
+          newScale = maxScale;
+        }
+
         const rect = vp.getBoundingClientRect();
         const mouseX = e.clientX - rect.left - rect.width / 2;
         const mouseY = e.clientY - rect.top - rect.height / 2;
 
-        const factor = e.deltaY < 0 ? 1.15 : 0.87;
-        const newScale = Math.max(0.15, Math.min(8.0, zoomScale * factor));
-
-        panX -= mouseX * (factor - 1);
-        panY -= mouseY * (factor - 1);
+        const actualFactor = newScale / zoomScale;
+        panX = mouseX + (panX - mouseX) * actualFactor;
+        panY = mouseY + (panY - mouseY) * actualFactor;
         zoomScale = newScale;
+
+        clampPan();
         updateTransform();
       }, { passive: false });
 
-      // Double-click to toggle fit vs 150% zoom
+      // Double-click to toggle fit vs zoomed detail
       vp.addEventListener("dblclick", (e) => {
         if (e.target.tagName === 'BUTTON') return;
-        if (zoomScale > 1.1) {
+        const minScale = getMinScale();
+        if (zoomScale > minScale * 1.05) {
           fitToScreen();
         } else {
-          zoomScale = 1.5;
+          zoomScale = Math.min(8.0, Math.max(1.5, minScale * 2.2));
           panX = 0;
           panY = 0;
+          clampPan();
           updateTransform();
+        }
+      });
+
+      // Window resize re-fits or re-clamps
+      window.addEventListener("resize", () => {
+        const modal = document.getElementById("lightbox-modal");
+        if (modal && !modal.classList.contains("hidden")) {
+          const minScale = getMinScale();
+          if (zoomScale <= minScale * 1.05) {
+            fitToScreen();
+          } else {
+            clampPan();
+            updateTransform();
+          }
         }
       });
 
@@ -705,13 +777,23 @@
         if (e.touches.length === 1 && isDragging) {
           panX = e.touches[0].clientX - dragStartX;
           panY = e.touches[0].clientY - dragStartY;
+          clampPan();
           updateTransform();
         } else if (e.touches.length === 2 && touchStartDist > 0) {
           const dist = Math.hypot(
             e.touches[0].clientX - e.touches[1].clientX,
             e.touches[0].clientY - e.touches[1].clientY
           );
-          zoomScale = Math.max(0.15, Math.min(8.0, initialScale * (dist / touchStartDist)));
+          const minScale = getMinScale();
+          const targetScale = initialScale * (dist / touchStartDist);
+          if (targetScale <= minScale) {
+            zoomScale = minScale;
+            panX = 0;
+            panY = 0;
+          } else {
+            zoomScale = Math.min(8.0, targetScale);
+            clampPan();
+          }
           updateTransform();
         }
       }, { passive: true });
