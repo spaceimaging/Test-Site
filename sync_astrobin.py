@@ -96,7 +96,24 @@ def load_catalog():
     return json.loads(match.group(1))
 
 
+def update_index_html_version():
+    index_path = os.path.join(BASE_DIR, "index.html")
+    if not os.path.exists(index_path):
+        return
+    with open(index_path, "r", encoding="utf-8") as f:
+        html = f.read()
+    new_version = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    html = re.sub(
+        r'<script\s+src="catalog\.js(?:\?[^"]*)?"\s*></script>',
+        f'<script src="catalog.js?v={new_version}"></script>',
+        html
+    )
+    with open(index_path, "w", encoding="utf-8") as f:
+        f.write(html)
+
+
 def save_catalog(catalog):
+    update_index_html_version()
     header = (
         "/**\n"
         " * Astrophotography Observational Archive - Target Catalog Data\n"
@@ -542,7 +559,7 @@ def main():
 
     if args.push:
         print("Committing and pushing to GitHub...")
-        subprocess.run(["git", "add", "catalog.js", "images/"], cwd=BASE_DIR, check=True)
+        subprocess.run(["git", "add", "catalog.js", "index.html", "images/"], cwd=BASE_DIR, check=True)
         titles = ", ".join(e["id"] for e in imported_entries)
         subprocess.run(
             ["git", "commit", "-m", f"Import {len(imported_entries)} AstroBin image(s): {titles}"],
